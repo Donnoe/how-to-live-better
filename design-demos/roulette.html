@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>高性价比人生指南 · 每日十条</title>
+<style>
+:root{
+  --bg:#FAF9F6; --surface:#FFFFFF; --surface2:#F4F2ED; --line:#E5E1D8; --line2:#EFECE4;
+  --ink:#1F2328; --ink2:#4A5058; --ink3:#6B7178;
+  --brand:#B0482C; --brand-ink:#8E3A22; --brand-soft:#FBEDE8;
+  --focus:#2C6FC4;
+  --r:10px;
+}
+html[data-theme="dark"]{
+  --bg:#15161A; --surface:#1D1F25; --surface2:#24272E; --line:#33373F; --line2:#2A2D34;
+  --ink:#EDEBE7; --ink2:#BFC4CB; --ink3:#969CA5;
+  --brand:#E4795A; --brand-ink:#F09B80; --brand-soft:#2C1E19;
+  --focus:#7FA9E8;
+}
+/* 领域彩虹色：八个生活领域，色相 5/42/133/176/214/253/297/342 */
+:root{ --d-safety:#E0533D; --d-health:#D99A2B; --d-mind:#4CA05C; --d-money:#17A398;
+  --d-law:#3B7DD8; --d-work:#6C63D8; --d-parent:#A85CC0; --d-rel:#DC5A8A; }
+html[data-theme="dark"]{ --d-safety:#F2836E; --d-health:#E8B65A; --d-mind:#6FC583; --d-money:#35BFB2;
+  --d-law:#6BA3EE; --d-work:#9089EA; --d-parent:#C085D6; --d-rel:#EE82AC; }
+[data-d="safety"]{ --c:var(--d-safety); --cd:#A8331F; --cb:#FCEAE6; --cbd:#F0C4BA }
+[data-d="health"]{ --c:var(--d-health); --cd:#7E5200; --cb:#FAF0DB; --cbd:#E7D19C }
+[data-d="mind"]  { --c:var(--d-mind);   --cd:#26622F; --cb:#E7F3E9; --cbd:#B7DCC0 }
+[data-d="money"] { --c:var(--d-money);  --cd:#0A6A63; --cb:#DFF3F1; --cbd:#AEDDD8 }
+[data-d="law"]   { --c:var(--d-law);    --cd:#17458C; --cb:#E7EFFB; --cbd:#BBD3F3 }
+[data-d="work"]  { --c:var(--d-work);   --cd:#3F359A; --cb:#EBEAF9; --cbd:#C8C3EF }
+[data-d="parent"]{ --c:var(--d-parent); --cd:#732C88; --cb:#F6EBFA; --cbd:#DCC2EC }
+[data-d="rel"]   { --c:var(--d-rel);    --cd:#93254F; --cb:#FBE9F0; --cbd:#F0C0D3 }
+html[data-theme="dark"] [data-d="safety"]{ --cd:#FFAB98; --cb:#2C1D19; --cbd:#4B2B24 }
+html[data-theme="dark"] [data-d="health"]{ --cd:#F5D08A; --cb:#292215; --cbd:#483A20 }
+html[data-theme="dark"] [data-d="mind"]  { --cd:#96DCAB; --cb:#1A2620; --cbd:#2C4033 }
+html[data-theme="dark"] [data-d="money"] { --cd:#68DCD0; --cb:#112624; --cbd:#1E403C }
+html[data-theme="dark"] [data-d="law"]   { --cd:#9AC3F7; --cb:#181F2C; --cbd:#26344B }
+html[data-theme="dark"] [data-d="work"]  { --cd:#B5AFF5; --cb:#1D1C2D; --cbd:#2F2D48 }
+html[data-theme="dark"] [data-d="parent"]{ --cd:#DCAAE6; --cb:#25182A; --cbd:#3D2A45 }
+html[data-theme="dark"] [data-d="rel"]   { --cd:#F8A9C6; --cb:#2C1A21; --cbd:#4A2A36 }
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,"Source Han Sans SC","Noto Sans CJK SC",sans-serif;
+  font-size:16px; line-height:1.8;
+  -webkit-text-size-adjust:100%;
+}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus); outline-offset:2px; border-radius:4px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+
+/* ---------- 顶栏 ---------- */
+.topbar{position:sticky;top:0;z-index:50;background:var(--surface);border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex;align-items:center;gap:14px;min-height:56px;flex-wrap:wrap;padding-top:6px;padding-bottom:6px}
+.brand{display:flex;align-items:baseline;gap:9px;flex:0 0 auto}
+.brand h1{font-size:17px;margin:0;font-weight:700;letter-spacing:.01em}
+.brand .sub{font-size:12.5px;color:var(--ink3);line-height:1.4}
+.search{position:relative;flex:1 1 220px;min-width:150px;max-width:340px}
+.search input{width:100%;padding:7px 10px 7px 30px;border:1px solid var(--line);border-radius:8px;background:var(--surface2);font-size:14px;line-height:1.5}
+.search svg{position:absolute;left:8px;top:50%;transform:translateY(-50%);color:var(--ink3)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--ink2);border-radius:999px;padding:4px 11px;font-size:13px;line-height:1.6;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--brand-soft);border-color:var(--brand);color:var(--brand-ink);font-weight:600}
+.iconbtn{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border:1px solid var(--line);background:var(--surface);border-radius:8px;cursor:pointer;color:var(--ink2)}
+.iconbtn:hover{border-color:var(--brand);color:var(--brand-ink)}
+.count{font-size:12.5px;color:var(--ink3);margin-left:auto;white-space:nowrap}
+
+/* ---------- 骨架 ---------- */
+.shell{display:flex;gap:28px;align-items:flex-start;padding:22px 0 64px}
+.toc{flex:0 0 232px;position:sticky;top:78px;max-height:calc(100vh - 100px);overflow:auto;padding-right:6px}
+.toc h2{font-size:12px;letter-spacing:.08em;color:var(--ink3);font-weight:700;margin:0 0 8px}
+.toc ol{list-style:none;margin:0;padding:0}
+.toc button{width:100%;display:flex;align-items:center;gap:8px;text-align:left;border:0;background:none;padding:4px 6px;border-radius:6px;cursor:pointer;font-size:13.5px;line-height:1.6;color:var(--ink2)}
+.toc button:hover{background:var(--surface2)}
+.toc button[aria-current="true"]{background:var(--surface);color:var(--ink);font-weight:600;box-shadow:inset 0 0 0 1px var(--line)}
+.toc .dot{flex:0 0 8px;height:8px;border-radius:50%;background:var(--c)}
+.toc .tt{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.toc .nn{flex:0 0 auto;font-size:11.5px;color:var(--ink3)}
+.toc li.empty button{color:var(--ink3);opacity:.62;cursor:default}
+main{flex:1 1 auto;min-width:0}
+
+/* ---------- 每日十条 ---------- */
+.daily{border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:18px 18px 14px}
+.dhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.dhead .t{font-size:20px;font-weight:700;margin:0;letter-spacing:.01em}
+.dhead .t small{font-size:13px;font-weight:500;color:var(--ink3);margin-left:8px;letter-spacing:0}
+.dhead .spacer{flex:1 1 auto}
+.reroll{border:1px solid var(--line);background:var(--surface2);color:var(--ink);border-radius:999px;
+  padding:5px 14px;font-size:13.5px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.reroll:hover{border-color:var(--brand);color:var(--brand-ink)}
+.reroll svg{transition:transform .5s cubic-bezier(.2,.8,.25,1)}
+.dial{flex:0 0 auto;width:52px;height:52px}
+.dial .arcs{transition:transform .55s cubic-bezier(.2,.8,.25,1);transform-origin:32px 32px}
+.dial text{font-size:15px;font-weight:700;fill:var(--ink2)}
+.lede{font-size:13.5px;color:var(--ink3);margin:8px 0 0;line-height:1.7}
+.rail{display:flex;gap:3px;margin:12px 0 4px;height:8px}
+.rail i{flex:1 1 0;border-radius:2px;background:var(--c);display:block}
+.raillegend{display:flex;flex-wrap:wrap;gap:4px 12px;margin:8px 0 0;font-size:12px;color:var(--ink3)}
+.raillegend span{display:inline-flex;align-items:center;gap:5px}
+.raillegend b{width:8px;height:8px;border-radius:2px;background:var(--c);display:inline-block}
+.dlist{list-style:none;margin:14px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.dcard{border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:13px 14px 11px;
+  display:flex;flex-direction:column;gap:7px;cursor:pointer;text-align:left;background-image:none}
+.dcard:hover{border-color:var(--c);box-shadow:0 1px 0 rgba(0,0,0,.02)}
+.dmeta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;line-height:1.5}
+.dom{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--cd);
+  background:var(--cb);border:1px solid var(--cbd);border-radius:999px;padding:1px 9px;line-height:1.7}
+.dom i{width:6px;height:6px;border-radius:50%;background:var(--c);display:inline-block}
+.grade{font-size:11.5px;font-weight:700;letter-spacing:.04em;border-radius:5px;padding:1px 6px;line-height:1.6;border:1px solid}
+.grade.A{color:#26622F;border-color:#B7DCC0;background:#EDF7EF}
+.grade.B{color:#17458C;border-color:#BBD3F3;background:#EFF5FD}
+.grade.C{color:#7E5200;border-color:#E7D19C;background:#FBF4E5}
+html[data-theme="dark"] .grade.A{color:#96DCAB;border-color:#2C4033;background:#1A2620}
+html[data-theme="dark"] .grade.B{color:#9AC3F7;border-color:#26344B;background:#181F2C}
+html[data-theme="dark"] .grade.C{color:#F5D08A;border-color:#483A20;background:#292215}
+.sect{font-size:12px;color:var(--ink3)}
+.readmark{font-size:11.5px;color:var(--ink3);border:1px solid var(--line);border-radius:5px;padding:0 6px;line-height:1.7}
+.dcard h3{margin:0;font-size:16.5px;line-height:1.6;font-weight:650;letter-spacing:.01em}
+.plain{margin:0;font-size:16px;line-height:1.85;color:var(--ink2);max-width:33em}
+html[data-theme="light"] .plain{color:#33383E}
+.dfoot{display:flex;align-items:center;gap:10px;margin-top:auto;padding-top:6px;border-top:1px dashed var(--line2)}
+.dfoot .cost{font-size:12px;color:var(--ink3);flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.jump{font-size:12.5px;color:var(--brand-ink);font-weight:600;white-space:nowrap}
+.mode-plain .dcard h3,.mode-plain .dcard .dfoot{display:none}
+.mode-plain .dlist{grid-template-columns:repeat(3,minmax(0,1fr))}
+.note{font-size:12.5px;color:var(--ink3);margin:10px 0 0}
+
+/* ---------- 正文 ---------- */
+.secHead{display:flex;align-items:baseline;gap:10px;margin:30px 0 12px}
+.secHead h2{font-size:17px;margin:0;font-weight:700}
+.secHead p{margin:0;font-size:12.5px;color:var(--ink3)}
+.icard{border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:15px 16px;margin:0 0 12px;scroll-margin-top:80px}
+.icard.flash{animation:flash 1.4s ease-out}
+@keyframes flash{0%{background:var(--brand-soft)}100%{background:var(--surface)}}
+.kv{margin:12px 0 0;display:grid;grid-template-columns:56px minmax(0,1fr);gap:6px 12px;font-size:14.5px;line-height:1.8}
+.kv dt{color:var(--ink3);font-size:12.5px;padding-top:3px}
+.kv dd{margin:0;color:var(--ink2);max-width:33em}
+details{margin-top:12px;border-top:1px dashed var(--line2);padding-top:9px}
+summary{cursor:pointer;font-size:13px;color:var(--ink2)}
+summary:hover{color:var(--brand-ink)}
+.src{font-size:13px;line-height:1.8;color:var(--ink3);margin:8px 0 0;max-width:36em;word-break:break-word}
+.tip{font-size:13.5px;color:var(--ink3);border:1px dashed var(--line);border-radius:8px;padding:12px 14px;margin:0 0 12px}
+.foot{margin-top:36px;padding-top:14px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink3);line-height:1.8}
+.hidden{display:none !important}
+
+/* ---------- 响应式 ---------- */
+@media (max-width:900px){
+  .shell{flex-direction:column;gap:0}
+  .toc{display:none}
+  .dlist{grid-template-columns:minmax(0,1fr)}
+  .mode-plain .dlist{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:560px){
+  .wrap{padding:0 13px}
+  .topbar .wrap{min-height:0;gap:6px 8px;padding:8px 13px}
+  .brand{order:1;flex:1 1 auto}
+  .brand h1{font-size:15.5px}
+  .brand .sub{display:none}
+  .count{order:1;margin-left:auto;font-size:11.5px}
+  .iconbtn{order:2;width:32px;height:32px}
+  .search{order:3;flex:1 1 100%;max-width:none}
+  .search input{padding:6px 10px 6px 30px;font-size:16px}
+  .chips{order:4;flex:1 1 100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto;font-size:12.5px;padding:3px 10px}
+  .daily{padding:14px 13px 11px;border-radius:12px}
+  .dhead{gap:9px}
+  .dhead .t{font-size:18px}
+  .dhead .t small{font-size:12px;margin-left:6px}
+  .dial{width:42px;height:42px}
+  .lede{margin-top:6px;font-size:13px}
+  .raillegend{display:none}
+  .rail{margin:10px 0 2px;height:7px}
+  .dlist{margin-top:10px;gap:10px}
+  .dcard{padding:11px 12px 9px;gap:6px}
+  .dcard h3{font-size:16px}
+  .plain{font-size:16px;line-height:1.8}
+  .sect{max-width:9.5em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .icard{padding:13px 13px}
+  .kv{grid-template-columns:1fr;gap:2px}
+  .kv dd{margin-bottom:7px}
+}
+/* ---------- 打印 ---------- */
+@media print{
+  :root{--bg:#fff;--surface:#fff;--surface2:#fff;--line:#ccc;--line2:#ddd;--ink:#000;--ink2:#222;--ink3:#555}
+  .topbar,.toc,.reroll,.search,.chips,.iconbtn,.jump{display:none !important}
+  body{font-size:11pt}
+  .shell{display:block;padding-top:0}
+  .daily{border:0;padding:0}
+  .dlist{grid-template-columns:repeat(2,1fr);gap:8px}
+  .dcard,.icard{break-inside:avoid;page-break-inside:avoid;border:1px solid #bbb}
+  details{display:block}
+  details .src{color:#333}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <div class="brand">
+      <h1>高性价比人生指南</h1>
+      <span class="sub" id="count">34 节 · 654 条</span>
+    </div>
+    <div class="search">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="搜标题或「说人话」…" aria-label="搜索建议">
+    </div>
+    <div class="chips" role="group" aria-label="筛选">
+      <button class="chip" data-mode="all" aria-pressed="true">全部</button>
+      <button class="chip" data-mode="a" aria-pressed="false">只看 A 级</button>
+      <button class="chip" data-mode="plain" aria-pressed="false">只看说人话</button>
+    </div>
+    <button class="iconbtn" id="themeBtn" aria-label="切换明暗主题" title="切换明暗主题">
+      <svg id="themeIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></svg>
+    </button>
+  </div>
+</header>
+
+<div class="wrap shell">
+  <nav class="toc" aria-label="目录">
+    <h2>目录 · 34 节</h2>
+    <ol id="tocList"></ol>
+  </nav>
+
+  <main>
+    <section class="daily" id="daily" aria-labelledby="dTitle">
+      <div class="dhead">
+        <h2 class="t" id="dTitle">每日十条<small id="dDate"></small></h2>
+        <div class="spacer"></div>
+        <button class="reroll" id="reroll">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>
+          换一批
+        </button>
+        <svg class="dial" id="dial" viewBox="0 0 64 64" aria-hidden="true">
+          <g class="arcs" id="dialArcs"></g>
+          <text x="32" y="37" text-anchor="middle">10</text>
+        </svg>
+      </div>
+      <p class="lede" id="dLede"></p>
+      <div class="rail" id="rail" aria-hidden="true"></div>
+      <p class="raillegend" id="railLegend"></p>
+      <ol class="dlist" id="dList"></ol>
+      <p class="note" id="dNote"></p>
+    </section>
+
+    <div class="secHead">
+      <h2 id="bodyTitle">正文 · 目录里的原条目</h2>
+      <p id="bodySub"></p>
+    </div>
+    <div id="detailSlot"></div>
+    <div id="bodyList"></div>
+
+    <p class="foot">
+      内容来自开源书《高性价比人生指南》（作者 eternity4719，Unlicense）。本页所有「说人话」「收益」「来源」均为原文摘录，一字未改。<br>
+      本文件为设计稿：只载入 <span id="fPool"></span> 条真实条目用于演示抽取与跳转，完整 654 条见项目仓库。
+    </p>
+  </main>
+</div>
+
+<script>
+const DB = {"domains":[["safety","意外防护"],["health","健康身体"],["mind","情绪与精力"],["money","钱与保障"],["law","法律与安全"],["work","工作与技能"],["parent","育儿与养老"],["rel","关系"]],"items":[{"k":"1-1","s":1,"st":"1. 不要早死","n":1,"t":"系安全带，前排后排都系","p":"坐前排系上安全带，出车祸时被撞死的概率大约降一半。坐轻型卡车前排的降六成。美国 2022 年死在车里的人，能查到系没系带的，有一半没系。","c":"不花钱。每次上车多花 2 秒。","b":"美国交通安全主管部门（NHTSA）估计，系安全带能让轿车前排乘员受致命伤的风险下降 45%。轻型卡车前排下降 60%。2022 年美国死在乘用车（载人的小汽车）里的人当中，能查到系没系带的，有 50% 没系。世界卫生组织（WHO）的口径是，安全带让车内人员的死亡风险最多降低 50%。WHO 估计中国 2021 年死于道路交通事故的有 248,099 人，相当于每 10 万人里死 17.4 人","e":"A","src":"NHTSA (2024). Occupant Protection in Passenger Vehicles: 2022 Data (DOT HS 813 573). <https://crashstats.nhtsa.dot.gov/Api/Public/ViewPublication/813573> ; WHO (2025). Road traffic injuries fact sheet. <https://www.who.int/news-room/fact-sheets/detail/road-traffic-injuries> ; WHO GHO RS_196/RS_198 (China, 2021). <https://ghoapi.azureedge.net/api/RS_196?$filter=SpatialDim%20eq%20%27CHN%27>","r":"后排也要系。同一份报告里，第二排被撞死的人有 60% 没系带。45%、60% 这两个数，是美国交通安全主管部门（NHTSA）拿事故数据库算出来的估计（引 Kahane 2015），不是随机分组的试验。WHO 那个中国死亡人数是推算出来的，比公安交管登记的数字高好几倍。两边统计的范围不一样，这里只用 WHO 的口径。","g":"钱=0 时间=少 毅力=否 收益=大 口径=死亡率","d":"safety"},{"k":"1-6","s":1,"st":"1. 不要早死","n":6,"t":"电动自行车不推进楼道、不进电梯、不在家里充电","p":"把电动车推进楼道、推进电梯，或者在家里充电，应急管理部的《高层民用建筑消防安全管理规定》明令禁止。不改正的，个人罚 500 到 1000 元，做生意的罚 2000 到 10000 元。罚款还是小事，要紧的是这种火正好烧在你唯一的逃生通道上。","c":"不花钱。难的地方是每次都停到楼下的集中充电点，多走几十米。","b":"应急管理部的规章明文禁止：「禁止在高层民用建筑公共门厅、疏散走道、楼梯间、安全出口停放电动自行车或者为电动自行车充电」。楼门厅、走道、楼梯间、安全出口这几处，既不能停车也不能充电。拒不改正的，不做生意的单位和个人罚 500 至 1000 元，做生意的罚 2000 至 10000 元","e":"A","src":"应急管理部 (2021). 高层民用建筑消防安全管理规定（应急管理部令第 5 号，第三十七条、第四十七条）. <https://www.gov.cn/zhengce/zhengceku/2021-08/01/content_5628815.htm>；应急管理部 (2023). 关于政协第十三届全国委员会第五次会议第00969号提案答复的函：「2021年，全国共接报电动自行车火灾1.8万起，造成65人死亡、222人受伤，直接财产损失达2.21亿元，其中发生在建筑物内3782起，造成60人死亡、175人受伤」. <https://www.mem.gov.cn/gk/jytabljggk/zxwytadfzy/2022zx/202301/t20230119_440918.shtml>；应急管理部 (2025). 2025年1月15日新闻发布会：「火灾起数同比下降42.2%，伤亡人数下降超过90%」. <https://www.mem.gov.cn/xw/xwfbh/2025n01y15xwfbh_6337/>","r":"别买改装电池，别用杂牌充电器，别整夜充着不管。锂电池一旦起火，几十秒里就整片烧开，同时冒出剧毒的烟。车停在楼道里起火，烧的就是你唯一的逃生通道。应急管理部公布的数字是，2021 年全国电动自行车火灾 1.8 万起，死 65 人。其中烧在建筑物里的 3782 起，死了 60 人，死者几乎都在室内。2024 年整治之后，火灾起数比上年降了 42.2%，伤亡降了九成以上，那一年的绝对数没有公布。","g":"钱=0 时间=少 毅力=些 收益=大 口径=死亡率","d":"safety"},{"k":"1-3","s":1,"st":"1. 不要早死","n":3,"t":"装烟雾报警器；冬天在室内烧煤、用燃气取暖的再装一氧化碳报警器","p":"一个能正常工作的烟雾报警器，能把住宅火灾里死亡的概率降约六成。起火时有四成人在睡觉，光靠鼻子是醒不过来的。冬天在屋里烧煤或用燃气的，再加一个一氧化碳报警器。中国 2018 年有 1.15 万人死于一氧化碳中毒，冬天那三个月七成死在家里。","c":"烟雾报警器一个 30 到 100 元。一氧化碳报警器一个 50 到 150 元。装好以后每年换一次电池。","b":"美国北卡罗来纳州研究了一批住宅火灾，回头比对出事和没出事的家庭。家里有一个能正常工作的烟雾报警器，死亡风险下降约六成。原值 OR 0.39，可信范围 95% CI 0.18 到 0.83。美国 2018 到 2020 年，有人住的住宅里发生的致死火灾，24% 家里没有烟雾报警器，41% 起火时人在睡觉。中国 2018 年报告一氧化碳中毒死亡 11,523 例。这些死亡里，12 月有 72.59%、1 月有 67.42%、2 月有 66.48% 发生在家中","e":"B","src":"Marshall SW 等 (1998). Fatal residential fires: who dies and who survives? JAMA. <https://doi.org/10.1001/jama.279.20.1633> ; USFA (2022). Fatal Fires in Residential Buildings (2018-2020), Topical Fire Report Series 22(2). <https://www.usfa.fema.gov/downloads/pdf/statistics/v22i2.pdf> ; You J 等 (2020). Number of Deaths due to Carbon Monoxide Poisoning by Month and by Place of Death — China, 2018. China CDC Weekly. <https://doi.org/10.46234/ccdcw2020.008>","r":"给 B 的原因：烟雾报警器这边只有一项研究，做法是回头比对出事和没出事的家庭，不是随机分组的试验。一氧化碳报警器本身没有降低死亡率的研究。这里的收益是按「中毒死亡集中在冬季、集中在家中」推出来的。","g":"钱=少 时间=少 毅力=否 收益=大 口径=死亡率","d":"safety"},{"k":"1-11","s":1,"st":"1. 不要早死","n":11,"t":"家里有小孩就给窗户和阳台装限位器，纱窗不算防护","p":"一副限位器几十块钱。纽约市给高风险住户免费装窗户护栏、又上门讲解，一个区上报的儿童坠落数三年里降了一半。后来纽约干脆立法，要求房东给住着小孩的房子装护栏。纱窗一推就开，不算防护。","c":"一副窗户限位器或者儿童安全锁几十元。装上去十分钟。","b":"纽约市从 1972 年起办了一个叫「孩子不会飞」的项目，在高风险城区免费发窗户护栏，还上门讲解。布朗克斯区上报的坠落数，1973 到 1975 年下降 50%。此后纽约市修改卫生法典，强制房东为住有 10 岁及以下儿童的公寓安装窗户护栏","e":"B","src":"Spiegel CN, Lindaman FC (1977). Children can't fly: a program to prevent childhood morbidity and mortality from window falls. American Journal of Public Health：「Significant reduction in falls resulted, particularly in the Bronx, where reported falls declined 50 percent from 1973 to 1975」，1976 年纽约市卫生法典修订「to require that landlords provide window guards in apartments where children ten years old and younger reside」. <https://doi.org/10.2105/AJPH.67.12.1143>；(2021). Unintentional Window Falls in Children and Adolescents. Academic Pediatrics：2007 年 1 月至 2017 年 8 月全国电子伤害监测系统 38,840 例急诊就诊，「The majority of falls occurred in children under the age of 6 and were related to falls from a second story or below」. <https://doi.org/10.1016/j.acap.2020.07.008>","r":"窗边和阳台边不要放床、沙发、箱子这类小孩能爬上去的东西。纱窗只挡蚊子，一推就掉，别把它当护栏。也不是只有住高层才要装：美国那份数据里，多数坠落发生在二层或者更低。","g":"钱=少 时间=少 毅力=否 收益=大 口径=死亡率","d":"safety"},{"k":"1-5","s":1,"st":"1. 不要早死","n":5,"t":"不采、不买、不吃野生蘑菇，任何「土办法鉴别」都不成立","p":"光 2025 年一年，全国就有 828 起蘑菇中毒，2165 人中招，13 人死。那一年还新认出 34 种以前没记录过会毒人的蘑菇。银针试毒、虫子吃过就没毒、颜色鲜艳才有毒，这些说法全都不成立。","c":"不花钱。难的地方是放弃一种季节性的野味。","b":"中国疾控中心 2025 年调查了 828 起蘑菇中毒事件，涉及 2165 人，死亡 13 人。病死率 0.6%，指中毒的人里有 0.6% 死亡。2019 到 2024 年每年 276 到 676 起，病死率在 0.87% 到 2.86% 之间。光 2025 年就鉴定出 138 种有毒蘑菇，其中 34 种是国内第一次记录到会引起中毒","e":"A","src":"Mushroom Poisoning Outbreaks — China, 2025. China CDC Weekly (2026)：「In 2025, China CDC investigated 828 mushroom poisoning incidents across 27 provincial-level administrative divisions (PLADs), affecting 2,165 individuals and causing 13 deaths - a case fatality rate of 0.6%, the lowest of the past six years. In total, 138 poisonous mushroom species were identified, including 34 newly recorded in poisoning incidents in China.」「From 2019 to 2024, the annual number of incidents ranged from 276 to 676, and the case fatality rate ranged from 0.87% to 2.86%.」<https://doi.org/10.46234/ccdcw2026.120>；同刊 2024 年度报告 <https://doi.org/10.46234/ccdcw2025.106>","r":"吃错了就立刻催吐，然后带上剩下的蘑菇或者拍的照片去医院。毒蘑菇中毒分好几种类型，认出是哪一种蘑菇直接决定医生怎么治。每年都有新种类被记录到能毒人，所以「本地人认得清」这个前提本身站不住。银针验毒、和大蒜同煮、虫子吃过就没毒、颜色鲜艳才有毒，这些说法全都不成立。","g":"钱=0 时间=少 毅力=些 收益=大 口径=死亡率","d":"safety"},{"k":"13-3","s":13,"st":"13. 紧急情况：先做什么","n":3,"t":"突然嘴歪、一侧胳膊没劲、说话说不清，立刻打 120，不要等、不要自己开车去","p":"嘴歪、一侧胳膊抬不起、说话说不清，立刻打 120。发病 3 小时内打药通开血管，恢复到生活基本能自理的可能性大约是不打药的 1.75 倍。拖到 3 到 4.5 小时只剩 1.26 倍。超过 4.5 小时就看不出差别了。记下症状开始的准确时间。别喂水喂药，别自己开车。","c":"不花钱。三个动作，看一遍就会：让他笑一下、双手平举、说一句完整的话。","b":"把 16 项静脉溶栓随机试验、6756 名患者的个体数据合起来算（荟萃分析）。静脉溶栓就是打药把堵住的血管通开。发病 3 小时内用阿替普酶溶栓，恢复到生活基本能自理（改良 Rankin 评分 0–1）的比值比 1.75，95% CI 1.35–2.27（可信范围）。这个结果出现的可能性约为不溶栓的 1.75 倍。拖到 3 到 4.5 小时是 1.26（1.05–1.51）。超过 4.5 小时是 1.15（0.95–1.40），统计上已经看不出差别","e":"A","src":"Emberson J, Lees KR, Lyden P, et al. (2014). Effect of treatment delay, age, and stroke severity on the effects of intravenous thrombolysis with alteplase for acute ischaemic stroke: a meta-analysis of individual patient data from randomised trials. Lancet, 384(9958), 1929-1935. <https://doi.org/10.1016/S0140-6736(14)60584-5>","r":"溶栓越早越有效，超过 4.5 小时就基本没用了。打 120 而不是自己开车，是因为救护车会直接送到有卒中中心的医院，还会提前通知对方准备。记下症状开始的准确时间，医生要用它决定能不能溶栓。别喂水喂药，别等「休息一下看看」","g":"钱=0 时间=少 毅力=否 收益=大 口径=死亡率","d":"safety"},{"k":"13-12","s":13,"st":"13. 紧急情况：先做什么","n":12,"t":"大出血先用手死死压住伤口，四肢压不住就上止血带，同时打 120","p":"先用手或衣物死死压住，四肢压不住就上止血带，再打 120，上了就不松开。战地伤员里，休克前上止血带的活了九成，休克后才上的只活一成，该上没上的 5 个人全死了。扎在伤口上方，拧到血停，记下时间。别拿鞋带绳子代替。脖子和躯干只能压，不能扎。","c":"一根旋压式止血带几十到一百多元，放车里和急救包里。学一次「扎在伤口上方、拧到血停、记时间」，几分钟。","b":"美国得州 11 家一级创伤中心 6 年里收了 1,026 例四肢血管伤，其中 181 例（17.6%）在到医院之前上了止血带。不做任何调整直接算，上了止血带的死亡 3.9%，没上的 5.2%。把其他条件拉平之后（多因素校正），上止血带仍然单独和活下来相关。校正 OR 5.86，可信范围是 95% CI 1.41 到 24.47。巴格达战地医院的 232 名伤员：休克出现前上止血带的存活 90%，休克后才上的只有 10%。需要止血带而没上的 5 人全部死亡，上了的存活 87%。顺序是：直接压迫，衣物、毛巾都行 → 压不住的四肢出血上止血带 → 打 120 → 不松开","e":"A","src":"Teixeira PGR 等 (2018). Civilian Prehospital Tourniquet Use Is Associated with Improved Survival in Patients with Peripheral Vascular Injury. Journal of the American College of Surgeons. <https://doi.org/10.1016/j.jamcollsurg.2018.01.047> ; Kragh JF 等 (2009). Survival with emergency tourniquet use to stop bleeding in major limb trauma. Annals of Surgery. <https://doi.org/10.1097/SLA.0b013e31818842ba> ; 中国医师协会急诊医师分会等 (2020). 止血带的急诊应用专家共识. 中华急诊医学杂志 29(6):773-779：「院前急救时，止血带一旦使用则不建议松开，除非得到可以替代的彻底止血的救治」「最长使用时间不应超过2 h。但如果客观情况无法到医院救治或者无替代止血办法，则在得到正规救援前不解除止血带」. <https://doi.org/10.3760/cma.j.issn.1671-0282.2020.06.006>，全文 <http://www.cem.org.cn/rhtml/20200606/index.htm>","r":"不要拿绳子、鞋带这类细东西当止血带，勒不住动脉，还割破皮肤。上了止血带不要隔一会儿松一下「放放血」。脖子和躯干上的出血只能压，不能扎。那份战地数据里，止血带本身没有让谁截肢，出现短暂神经麻痹的有 4 例。中国急诊医师的专家共识说法一致：院前一旦用上就不建议松开，除非有别的办法能彻底止血。上臂出血扎在上臂中上三分之一，大腿出血扎在大腿根。前臂、小腿、肘、膝上不要扎。共识建议到医院前后总共尽量别超过 2 小时，但到不了医院、又没别的办法止血的，等到正规救援之前不解开。皮带、领带、衣袖临时做的止血带，单用很难止住血，要配一根棍子绞紧。","g":"钱=少 时间=中 毅力=否 收益=大 口径=死亡率","d":"safety"},{"k":"21-1","s":21,"st":"21. 出国、旅行与境外安全","n":1,"t":"出发前查一次外交部安全提醒，标了「暂勿前往」的地方就别去","p":"外交部把国外的安全风险分成四档，最高的一档叫「暂勿前往」。2026 年 9 月 15 日起，避开高风险的国家和地区写进了行政法规。办证件和出境过关的时候，工作人员还会提醒你，必要时会劝你别去。出发前翻一遍那一页，几分钟的事。","c":"不花钱。打开中国领事服务网翻一遍，几分钟就看完。","b":"外交部按风险高低公开发布国外安全提醒。从低到高大致是四档：「注意安全」「加强安全防范」「谨慎前往」「暂勿前往」。2026 年 9 月 15 日起施行的新规，把个人的义务也写进了行政法规。原文是：「中国公民应当关注国外安全提醒和旅游目的地安全风险提示，避免前往及驻留高风险国家或者地区」。新规同时要求移民管理机构（办出入境证件和管边检的部门），在办证和出境边检时提醒要去高风险地区的人。这一条的原文是：「对准备前往风险等级为最高级别或者严重危及人身安全案件突发高发的国家或者地区的中国公民，必要时应当劝阻其前往」","e":"A","src":"国务院 (2026). 关于出境入境管理的规定（国令第 841 号）. <https://www.gov.cn/zhengce/zhengceku/202607/content_7077173.htm>（第二条）；国务院 (2023). 领事保护与协助条例（国令第 763 号）. <https://www.gov.cn/zhengce/zhengceku/202307/content_6891761.htm>（第十九、二十一条）；外交部领事司. 安全提醒. <https://cs.mfa.gov.cn/zggmzhw/lsbh/aqtx/>","r":"提醒会随局势变动，本书不抄名单，出行前自己查一次那一页。截至 2026 年 9 月 7 日，该栏目里还挂着这几条「暂勿前往」类提醒：斯威士兰（2026-08-25）、巴勒斯坦（2023-10-10）、苏丹（2023-04-17）。另外四条是阿富汗（2023-02-17）、叙利亚（2023-01-04）、秘鲁（2022-12-29）、索马里（2022-11-24）。另外还有针对缅北地区、刚果（金）部分省份的专门提醒。旅行社也有告知义务。跟团之前，你可以要求对方书面说明目的地的风险","g":"钱=0 时间=少 毅力=否 收益=大 口径=死亡率","d":"safety"},{"k":"2-11","s":2,"st":"2. 不要慢慢死","n":11,"t":"每天走到 7000–8000 步，或者每周累计快走 150–300 分钟","p":"每天走 7800 步左右的人，同期死亡的概率比只走 3500 步的人低约四成半。按时间算也一样，每周快走 150–300 分钟，比不运动低约三成。多到一定量就不再往下降了，60 岁以上走到 6000–8000 步就够。两种数法达标一个就行。","c":"不花钱。按步数算，每天走 60–90 分钟，可以拆进上下班和买菜里。按运动时间算，每天 20–45 分钟。难在要长期坚持下来。","b":"把 15 项跟踪一群人的研究合起来算，只记录、不分组。这 15 项共 47471 人、3013 例死亡。按每天步数把人分成四档，最低那档中位是 3553 步/天。另外三档的中位是 5801、7842、10901 步/天。这三档的死亡风险比最低档分别低约 40%、45%、53%（HR 0.60、0.55、0.47）。60 岁以上的人走到 6000–8000 步以后，再多走收益就趋平了。60 岁以下的人是在 8000–10000 步以后趋平。另有一项分析把多项研究合起来算：从约 3867 步/天开始有效。之后每多走 1000 步/天，死亡风险降约 15%。按运动时间算：把多项跟踪研究汇总到一起算（只记录、不分组），运动量达到指南下限 1–2 倍的人，死亡风险比不运动的人低约 31%（HR 0.69）。这个量是 7.5–15 MET·h/周，大约合快走 150–300 分钟/周。没达到下限的人也低约 20%（HR 0.80）。达到下限 3–5 倍的人低约 39%（HR 0.61），这是降幅的顶点。再往上加不会更低，但也没害处（10 倍以上是 HR 0.69）。另一项用加速度计测量的汇总研究：中高强度活动最多的那四分之一人，比最少的那四分之一死亡风险低约 48%（HR 0.52）。加速度计是戴在身上实测活动量的仪器。","e":"A","src":"Paluch AE 等 (2022). Daily steps and all-cause mortality: a meta-analysis of 15 international cohorts. Lancet Public Health. <https://doi.org/10.1016/S2468-2667(21)00302-9>；Banach M 等 (2023). The association between daily step count and all-cause and cardiovascular mortality: a meta-analysis. European Journal of Preventive Cardiology. <https://doi.org/10.1093/eurjpc/zwad229>；Arem H 等 (2015). Leisure time physical activity and mortality: a detailed pooled analysis of the dose-response relationship. JAMA Internal Medicine. <https://doi.org/10.1001/jamainternmed.2015.0533>；Ekelund U 等 (2019). Dose-response associations between accelerometry measured physical activity and sedentary time and all cause mortality: systematic review and harmonised meta-analysis. BMJ. <https://doi.org/10.1136/bmj.l4570>","r":"步数和运动时间说的是同一件事，只是换了个数法，达标一个就行。从 4000 步加到 7000 步这一段最划算，不必非要凑一万步。要注意这类研究只是跟踪记录：走得最少、动得最少的那批人里，混着本来就病着走不动的。他们是快不行了才动得少，不是因为少动才早死。所以算出的差距常常偏大。用仪器实测活动量的那几项，跟踪时间短，参与者偏老，真实好处没有「风险降到 0.52 倍」那么大。但越动越好的趋势是清楚的。","g":"钱=0 时间=多 毅力=些 收益=大 口径=死亡率","d":"health"},{"k":"2-19","s":2,"st":"2. 不要慢慢死","n":19,"t":"少喝或不喝酒","p":"每周喝过 100 g 纯酒精以后，喝得越多死得越早。100 g 纯酒精大约是 2.5 L 啤酒。40 岁时每周喝 100–200 g 的人，少活半年左右；喝 200–350 g 的少一两年；超过 350 g 的少四五年。按整体健康算，最划算的量是不喝。","c":"不花钱，还省钱，也不占时间。难在社交场合推酒时的一点尴尬。","b":"把 83 项往后跟踪的研究合起来算，只记录、不分组，60 万名在喝酒的人。死亡风险的最低点，在每周不超过 100 g 纯酒精。这个量大约是 5% 的啤酒 2.5 L，或者 40 度白酒 300 mL。40 岁时每周喝 100–200 g 的人，预期寿命少约 6 个月。每周喝 200–350 g 的少 1–2 年。超过 350 g 的少 4–5 年。以上三项原文以寿命年报告。全球疾病负担研究 GBD 2016 把各类健康损失合起来算，风险最低的饮酒量是 0 杯/周。还有一项汇总把研究设计上的偏差校正过了。每天喝 1.3–24 g 的人和一辈子不喝的人比，死亡风险低约 7%（RR 0.93）。但这一项没看出统计上的差别。每天喝 45–64 g 的高约 19%（RR 1.19）。每天 65 g 以上的高约 35%（RR 1.35）。","e":"A","src":"Wood AM 等 (2018). Risk thresholds for alcohol consumption: combined analysis of individual-participant data for 599 912 current drinkers in 83 prospective studies. Lancet. <https://doi.org/10.1016/S0140-6736(18)30134-X>；GBD 2016 Alcohol Collaborators (2018). Alcohol use and burden for 195 countries and territories, 1990–2016: a systematic analysis for the Global Burden of Disease Study 2016. Lancet. <https://doi.org/10.1016/S0140-6736(18)31310-2>；Zhao J 等 (2023). Association Between Daily Alcohol Intake and Risk of All-Cause Mortality: A Systematic Review and Meta-analyses. JAMA Network Open. <https://doi.org/10.1001/jamanetworkopen.2023.6185>；Di Castelnuovo A 等 (2006). Alcohol dosing and total mortality in men and women: an updated meta-analysis of 34 prospective studies. Archives of Internal Medicine. <https://doi.org/10.1001/archinte.166.22.2437>（争议方）","r":"争议。认为「少喝有好处」的一方，是一份 34 项长期跟踪研究的汇总。它报告：少量饮酒的人总死亡率最多低 17%–18%。它给的量是男性每天不超过 4 杯、女性不超过 2 杯。在这个量以内，喝得多的人死亡率反而低。反方认为，「不喝酒」那一组里混进了因病戒酒的人和本来身体就差的人。有一项汇总专门把这些干扰扣掉，做完以后保护作用就没了。全球疾病负担研究也给出 0 最安全。稳妥的读法是：少喝不会明显伤寿命，多喝一定伤。「为了健康开始喝酒」没有依据。想少喝怎么办见本节第 21 条（先数杯数再找医生）。天天喝的人不能自己硬戒，见本节第 20 条（别自己硬戒）","g":"钱=0 时间=少 毅力=些 收益=大 口径=死亡率","d":"health"},{"k":"2-17","s":2,"st":"2. 不要慢慢死","n":17,"t":"别连着坐太久，隔一阵起身动一动","p":"坐得最久的人，同期死亡的概率是坐得最少的人的 2.6 倍。一次连着坐很久，还要另算一笔风险。但只要每天有 60–75 分钟中等强度活动，久坐多出来的风险基本就被抵消了。","c":"不花钱，起身几下也用不了多少时间。难在坐进去就忘了时间，得设个提醒。","b":"美国有一项跟踪研究，只记录、不分组，用加速度计实测。把人按每天久坐总时长分成四份。久坐最多的那份人，死亡风险是最少那份的 2.63 倍（HR 2.63）。再按一次连着坐多久分成四份：连坐最久的那份人，是连坐最短那份的 1.96 倍（HR 1.96）。所以坐的总量和一次连坐多久，各自单独相关。另一项汇总把上百万人的研究合起来算，只记录、不分组。每天坐 8 小时以上、又几乎不运动的人，死亡风险是另一类人的 1.59 倍（HR 1.59）。另一类人是每天坐不到 4 小时、又最活跃的。每天约 60–75 分钟中等强度活动，可以抵消久坐多出来的风险。最活跃那组即使每天坐 8 小时以上，HR 也只有 1.04，没看出统计上的差别。","e":"A","src":"Diaz KM 等 (2017). Patterns of Sedentary Behavior and Mortality in U.S. Middle-Aged and Older Adults: A National Cohort Study. Annals of Internal Medicine. <https://doi.org/10.7326/M17-0212>；Ekelund U 等 (2016). Does physical activity attenuate, or even eliminate, the detrimental association of sitting time with mortality? A harmonised meta-analysis of data from more than 1 million men and women. Lancet. <https://doi.org/10.1016/S0140-6736(16)30370-1>","r":"可靠的结论是：坐多久不如动多少重要，运动量够的时候久坐的风险基本消失。要注意这类研究只是跟踪记录，坐得最多的人里有大量本来就病着的，「风险高到 2.63 倍」里明显含着「先病了才久坐」。另外同一份汇总里，每天看电视 3 小时以上的风险在各个运动量的人身上都存在，最活跃那组只是把这个起点推到 5 小时。","g":"钱=0 时间=少 毅力=些 收益=大 口径=死亡率","d":"health"},{"k":"1-23","s":1,"st":"1. 不要早死","n":23,"t":"查幽门螺杆菌，阳性就根除","p":"山东临朐那项跟踪了 22 年的试验里，把幽门螺杆菌根除掉的人，后来得胃癌的概率低约一半，死于胃癌的概率低约四成。查一次一两百块，根除要吃两周药。","c":"碳 13 或碳 14 呼气试验 100 到 200 元。根除要同时吃四种药，两周药费 200 到 500 元。难的地方是这两周的药要按点吃满。","b":"山东临朐那项随机分组的试验跟踪了 22 年。做过幽门螺杆菌根除治疗的人，得胃癌的风险低约一半。原值 OR 0.48，可信范围 95% CI 0.32 到 0.71。死于胃癌的风险低约 38%（HR 0.62，95% CI 0.39 到 0.99）","e":"A","src":"Li WQ 等 (2019). Effects of Helicobacter pylori treatment and vitamin and garlic supplementation on gastric cancer incidence and mortality: follow-up of a randomized intervention trial. BMJ. <https://doi.org/10.1136/bmj.l5016>","r":"根除以后还可能再感染，所以家里人一起查、一起治。这项试验的人群是胃癌高发区的居民。住在低发区的人，实际拿到的好处会小得多。","g":"钱=少 时间=少 毅力=些 收益=大 口径=死亡率","d":"health"},{"k":"1-18","s":1,"st":"1. 不要早死","n":18,"t":"30 岁以上女性做宫颈癌筛查，优先 HPV 检测","p":"印度农村那项试验里，一辈子只做过一次 HPV 检测的女性，死于宫颈癌的概率低约一半，查出晚期宫颈癌的概率低约五成。一次一两百块，结果阴性能管 5 年。","c":"HPV 检测一次 100 到 300 元。结果阴性的，5 年查一次就行。取样几分钟。","b":"印度农村那项试验按群体随机分组，不是按个人分组。对象是 30 到 59 岁的女性。只做一次 HPV 检测筛查，死于宫颈癌的风险就低约 48%。原值 HR 0.52，可信范围 95% CI 0.33 到 0.83。查出晚期宫颈癌的风险低约 53%（HR 0.47，95% CI 0.32 到 0.69）","e":"A","src":"Sankaranarayanan R 等 (2009). HPV screening for cervical cancer in rural India. New England Journal of Medicine. <https://doi.org/10.1056/NEJMoa0808516>","r":"打过 HPV 疫苗的人也要筛查，因为疫苗盖不住全部的病毒型别。这项研究少见的地方是：它是随机分组的筛查试验，直接拿死亡人数当结果，而且只筛了一轮。","g":"钱=少 时间=少 毅力=否 收益=大 口径=死亡率","d":"health"},{"k":"16-1","s":16,"st":"16. 得了慢性病之后怎么活","n":1,"t":"药按医嘱吃满，别感觉好了就停","p":"按医生说的把药吃满的人，同期死亡的可能性大约只有断断续续吃药的人的一半。这个数要打折看。连假药都吃满的人死亡率也低，说明有一部分好处来自「能坚持吃药的人本来就更注意健康」。但停药的害处是确定的，降压药、抗凝药、抗排异药尤其如此。","c":"不花钱，反而省下以后治并发症的钱。每天吃药占不了几分钟，难在一天不落地吃下去。","b":"21 项研究、46847 人合起来算（荟萃分析）：和吃药断断续续的人相比，按医嘱吃满的人同期死亡的可能性约低 44%。原值是比值比 0.56，95% CI 0.50–0.63（可信范围）。只看确有疗效的治疗，约低 45%（0.55，0.49–0.62）","e":"A","src":"Simpson SH, Eurich DT, Majumdar SR, et al. (2006). A meta-analysis of the association between adherence to drug therapy and mortality. BMJ, 333(7557), 15. <https://doi.org/10.1136/bmj.38875.675486.55>","r":"争议。这也是这本书里最需要打折看的一个数字。同一项汇总分析里，连安慰剂（假药）都吃满的人死亡率也低（0.56，0.43–0.74）。这说明相当一部分好处来自「能坚持吃药的人本来就更注意健康」。作者把这层混进来的因素叫健康依从者效应。但停药本身的害处是明确的，尤其是降压药、抗凝药和抗排异药","g":"钱=0 时间=少 毅力=是 收益=大 口径=死亡率","d":"health"},{"k":"34-1","s":34,"st":"34. 家里的常备药别吃出事","n":1,"t":"同时吃两种感冒药或止痛药之前，先看成分表，对乙酰氨基酚只能占一种","p":"很多感冒药里都掺了对乙酰氨基酚，两盒一起吃就是吃了双份，过量会伤肝。在美国，它造成的急性肝衰竭病人里，近三成没等到换肝就死了。国内说明书建议一天最多吃 2 克，吃药期间也别喝酒。","c":"不花钱。看一眼每盒药的成分表，一两分钟。","b":"美国 22 家医院用 6 年时间连续登记了 662 例急性肝衰竭。其中 275 例（42%）是对乙酰氨基酚造成的，吞下的剂量中位数是 24 克。这 275 人里，131 人（48%）是不小心吃多的，不是故意。不小心吃多的人里，38% 同时吃了两种以上含这个成分的药。这 275 人里，27% 没等到换肝就死了，8% 做了肝移植。国家药监局 2020 年要求非处方药说明书写明：过量使用会引起严重肝损伤，建议一日最大量不超过 2 克。说明书还要写明，尽量避免和含对乙酰氨基酚或其他解热镇痛药的药品合用。美国法规要求这类非处方药在警示第一条写明三种伤肝情形：超过一天最大量，和其他含对乙酰氨基酚的药同吃，用药期间每天喝 3 杯以上的酒。","e":"B","src":"Larson AM, Polson J, Fontana RJ, et al.; Acute Liver Failure Study Group (2005). Acetaminophen-induced acute liver failure: results of a United States multicenter, prospective study. Hepatology, 42(6):1364-1372. <https://doi.org/10.1002/hep.20948>；国家药监局关于修订对乙酰氨基酚常释及缓释制剂说明书的公告（2020年第15号）及附件2《对乙酰氨基酚常释制剂非处方药说明书修订要求》（湖南省药品监督管理局转载）. <http://mpa.hunan.gov.cn/mpa/xxgk/tzgg/wjtz/202003/t20200311_11809335.html>；21 CFR 201.326(a)(1)(iii)(A) Liver warning. <https://www.ecfr.gov/current/title-21/chapter-I/subchapter-C/part-201/subpart-G/section-201.326>","r":"对乙酰氨基酚也叫扑热息痛。复方感冒药的通用名里带「氨酚」两个字的，比如氨酚伪麻、氨咖黄敏，就含这个成分。拿不准就把几盒药都拿给药店的药师看。定 B 是因为美国那组数字是病例登记，没有对照组，算不出看了成分表能少出多少事。收益定「大」是按后果定的：急性肝衰竭里有近三成直接死亡。","g":"钱=0 时间=少 毅力=否 收益=大 口径=死亡率","d":"health"},{"k":"2-22","s":2,"st":"2. 不要慢慢死","n":22,"t":"每天吃一小把坚果","p":"常吃坚果的人，同期死亡的概率比不吃的人低约两成。一周吃一次就能看出差别，低约一成。吃到每天一把，差别最明显。","c":"每天吃 28 克，一年约两三百元。顺手就吃，不占时间。","b":"两项美国跟踪研究，11.9 万人，300 多万人年。人年就是人数乘以各自跟踪的年数。和不吃坚果的人比：每周吃不到 1 次的人死亡风险低约 7%（风险比 0.93，95% CI 0.90–0.96，这是可信范围）。每周吃 1 次的低约 11%（0.89，0.86–0.93）。每周 2–4 次的低约 13%（0.87，0.83–0.90）。每周 5–6 次的低约 15%（0.85，0.79–0.91）。每周 7 次以上的低约 20%（0.80，0.73–0.86）","e":"A","src":"Bao Y, Han J, Hu FB, et al. (2013). Association of nut consumption with total and cause-specific mortality. New England Journal of Medicine, 369(21), 2001-2011. <https://doi.org/10.1056/NEJMoa1307352>","r":"买原味不加盐的。坚果热量不低，别当零食敞开吃。要注意这类研究只是长期跟踪一群人，吃坚果的人整体生活方式更好，所以数字要打个折","g":"钱=少 时间=少 毅力=否 收益=大 口径=死亡率","d":"health"},{"k":"3-3","s":3,"st":"3. 不要浪费精力","n":3,"t":"每晚睡够 7 到 8 小时，别把 6 小时当作够用","p":"连着两周每晚只睡 6 小时，脑子的表现会掉到相当于两天两夜没合眼的水平。麻烦的是自己感觉不到。自己打分的困倦头几天涨完就不再涨，睡 6 小时的人和睡 4 小时的人打分一样困。所以「我睡 6 小时够用」这句话本身就是缺觉的症状。","c":"不花钱。每天要多留 1 到 2 小时给睡眠。早一点上床，需要一点毅力。","b":"48 名 21 到 38 岁的健康成人，连续 14 天每晚只睡 6 小时。他们的脑力表现累计下降，掉到相当于连续 2 晚完全不睡的水平。而自己打分的困倦程度只在头几天上升，之后几乎不再增加。6 小时组和 4 小时组的自评困倦没有差别。这是把人随机分成两组做的对照试验（RCT）。另外，短时间不睡（急性睡眠剥夺，不超过 48 小时）对简单注意力走神的效果大小 g = -0.776，对推理准确率 g = -0.125。这部分是把 70 项研究合起来算的。","e":"A","src":"Van Dongen, Maislin, Mullington & Dinges (2003). The cumulative cost of additional wakefulness. Sleep. <https://doi.org/10.1093/sleep/26.2.117>；Lim & Dinges (2010). A meta-analysis of the impact of short-term sleep deprivation on cognitive variables. Psychological Bulletin. <https://doi.org/10.1037/a0018883>","r":"「自己觉得不困」不是睡够了的证据。长期睡 6 小时的人只是感觉上习惯了，表现并没有跟上。汇总多项研究的那部分说的是整夜不睡。「长期少睡」只有一项随机对照试验支持。睡多久和死亡风险的关系另算，见第 2 节第 13 条（每晚睡 7 小时左右）：那边按死亡率算，7 小时那档风险最低。","g":"钱=0 时间=多 毅力=些 收益=大 口径=时间","d":"mind"},{"k":"3-4","s":3,"st":"3. 不要浪费精力","n":4,"t":"下午两点以后不碰咖啡因","p":"睡前 6 小时喝一大杯咖啡（400 mg），当晚用仪器测出来少睡 1 小时以上。可自己写的睡眠日记根本看不出差别。一杯普通咖啡（107 mg）要在睡前 8.8 小时以上喝完，才不影响睡眠。十一点睡的人，下午两点就是界线。","c":"不花钱。习惯下午喝咖啡的人，要忍住不喝，需要一点毅力。","b":"睡前 6 小时喝 400 mg 咖啡因，仪器测到的总睡眠时间比喝安慰剂少 1.1 到 1.2 小时。安慰剂就是不含咖啡因的对照饮料。可是受试者自己写的睡眠日记没有报出差别，自己察觉不到。把多项研究合起来算（荟萃分析）：咖啡因平均让总睡眠时间减少 45 分钟。躺在床上真正睡着的比例（睡眠效率）下降 7%。一杯咖啡（107 mg）要在睡前 8.8 小时以上喝完，才不影响睡眠。","e":"A","src":"Drake, Roehrs, Shambroom & Roth (2013). Caffeine effects on sleep taken 0, 3, or 6 hours before going to bed. Journal of Clinical Sleep Medicine. <https://doi.org/10.5664/jcsm.3170>；Gardiner et al. (2023). The effect of caffeine on subsequent sleep: A systematic review and meta-analysis. Sleep Medicine Reviews. <https://doi.org/10.1016/j.smrv.2023.101764>","r":"Drake 那项只有一个实验室做过，用的 400 mg 偏大，大约两三杯咖啡。咖啡因代谢慢的人，截止时间还要更早。少喝咖啡因换回来的是睡眠时长，和第 3 条（每晚睡够 7 到 8 小时）叠加。","g":"钱=0 时间=少 毅力=些 收益=大 口径=时间","d":"mind"},{"k":"3-20","s":3,"st":"3. 不要浪费精力","n":20,"t":"别把「别人过得怎么样」当每日必读：给刷同龄人动态的应用设限或关掉","p":"习惯在网上跟过得更好的人比的人，往往情绪更差、自尊更低。把 Facebook 停用四周的人，幸福感小幅提高，但对时事的了解也掉了一截。把三个社交平台各限到每天 10 分钟的人，三周后孤独和抑郁都降了下来。","c":"不花钱。给应用设限时，或者把账号停掉，都是几分钟的事。难的是之后不再打开，要长期对抗惯性。","b":"把多项研究合起来算（荟萃分析）：54 个独立样本、94 个效应量、N = 36,583，用的是三层随机效应模型。网上向上社会比较与心理适应不良的平均相关 r = 0.330（95% CI 0.289–0.370，可信范围）。按具体结果分开看。怕被人看轻这类社会评价性的负面情绪 0.438，焦虑 0.382。抑郁 0.306，幸福感偏低 0.268，自尊偏低 0.263。年龄、文化背景、数据采集年份都不影响这个关联的强弱。长期跟踪的研究得出的结果，也不比同一时间点的调查更强。另有一项随机分组的对照试验，受试者是 2,743 名美国 Facebook 用户。其中 61% 的人愿意以低于 102 美元接受停用。这些人被随机分为停用四周组与对照组。停用为普通受试者每天空出 60 分钟。主观幸福感指数提高 0.09 个标准差。分项是生活满意度 0.12、焦虑 0.10、抑郁 0.09、快乐 0.08。把多次比较碰巧的成分扣掉后，这些仍然算数。作者给了一个参照，是让人变积极的心理干预。这类干预对主观幸福感约 +0.34 个标准差，对抑郁约 -0.23 个标准差。所以这个效应约为常规心理干预的 25% 到 40%。同期的代价是：时事知识指数下降 0.19 个标准差，政治立场对立程度下降 0.16 个标准差。实验结束后，停用组的 Facebook 使用仍比对照低 12 分钟/天（0.31 个标准差，降幅 23%）。还有一项随机分组的对照试验，受试者是 143 名本科生，被随机分成两组。一组把 Facebook、Instagram、Snapchat 每个平台每天限 10 分钟，另一组照常使用。三周后，限时组的孤独与抑郁明显下降。两组的焦虑与错失恐惧都比一开始低。","e":"A","src":"Lei Y, Hu S, Sun Y, Zheng L (2026). \"Looking up\" linked to feeling down: a meta-analysis of online upward social comparison and psychological maladjustment. Frontiers in Psychology. <https://doi.org/10.3389/fpsyg.2026.1825169>；Allcott H, Braghieri L, Eichmeyer S, Gentzkow M (2020). The Welfare Effects of Social Media. American Economic Review, 110(3), 629–676. <https://doi.org/10.1257/aer.20190658>；Allcott H, Braghieri L, Eichmeyer S, Gentzkow M (2019). The Welfare Effects of Social Media. NBER Working Paper No. 25514（本条引用的具体数字按这一版逐字核对，刊出版的摘要不含数字）. <https://www.nber.org/papers/w25514>；Hunt MG, Marx R, Lipson C, Young J (2018). No More FOMO: Limiting Social Media Decreases Loneliness and Depression. Journal of Social and Clinical Psychology, 37(10), 751–768. <https://doi.org/10.1521/jscp.2018.37.10.751>","r":"「相关」那一半只说明两件事一起出现，不能读成谁导致谁，作者自己也说还需要更多长期跟踪的研究。随机分组那一半能说因果，但受试者是 2018 年美国中期选举前的 Facebook 用户，搬到中国的平台上属于硬套。Hunt 那项只有 143 名本科生，而且就这一项。效应量都不大，别指望关掉应用就能解决情绪问题。要拦的是「看别人过得怎么样」这一类使用，和家人朋友联系、查信息、找工作不在内。真按不住，就先从关推送、关「可能认识的人」和首页推荐入手。总屏幕时间的账见第 4 节第 15、16 条（短视频硬上限、不看滚动新闻）。情绪低落时先做什么，见本节第 18 条（动起来、晒太阳、按时睡）。靠买东西找回身份感见第 6 节第 23 条。为了「往上挪一档」多花钱见第 6 节第 24 条。","g":"钱=0 时间=少 毅力=是 收益=大 口径=时间","d":"mind"},{"k":"22-6","s":22,"st":"22. 怎么放松：娱乐场所和减压","n":6,"t":"心情差就去走或者跑，抗抑郁的效应量（效果大小）跟强度成正比","p":"心情差的时候，快走或慢跑改善最明显。其次是瑜伽、力量训练、太极气功，几种差距不大。强度开得越高效果越好，力量训练和瑜伽最容易坚持。这方面的证据质量偏低，能确定的是动比不动好，挑自己坚持得下来的那种。","c":"不花钱。每次半小时上下。难在情绪差的时候最不想动，得推自己一把。","b":"这是把 218 项随机分成两组的对照试验合在一起算的结果。涉及 495 个组、14170 名符合重度抑郁临床标准的参与者。算法让各种运动互相比较（贝叶斯网状荟萃分析）。拿来对比的是常规照护和安慰剂片（主动对照）。效果大小用 Hedges' g 表示，数越往负走，症状改善越多。快走或慢跑 −0.62（95% 可信区间 −0.80 至 −0.45，意思是真实值大致落在这一段里）。瑜伽 −0.55（−0.73 至 −0.36）。力量训练 −0.49（−0.69 至 −0.29）。混合有氧 −0.43（−0.61 至 −0.24）。太极或气功 −0.42（−0.65 至 −0.21）。原文说「运动的效果与所处方的强度成正比」：强度开得越高，效果越好。力量训练和瑜伽的可接受度最好，最容易坚持下来","e":"A","src":"Noetel M, Sanders T, Gallardo-Gómez D, et al. (2024). Effect of exercise for depression: systematic review and network meta-analysis of randomised controlled trials. BMJ, 384, e075847. <https://doi.org/10.1136/bmj-2023-075847>","r":"争议。作者自己写明，218 项研究里只有 1 项做得够干净、不容易被设计带偏。按通行的打分法，快走慢跑只算「低」可信，其余是「极低」。运动也瞒不住参与者，人知道自己在锻炼，就容易觉得好些，这份期待去不掉。结论方向仍然可用：动比不动好，强度别太低，选自己能坚持的那种。这是第 3 节「情绪低落时先动起来」的展开，不能替代确诊后的规范治疗","g":"钱=0 时间=中 毅力=是 收益=大 口径=死亡率","d":"mind"},{"k":"29-8","s":29,"st":"29. 遭遇重大打击之后","n":8,"t":"哀伤过了半年还在原地、日子过不下去，去精神科或临床心理科挂号","p":"大约每十个丧亲的成年人里有一个会卡住：半年以上还在持续想念到吃不下饭、上不了班、带不了孩子，人麻木，觉得生活没有意义。这不是不够坚强，它有诊断标准，也有专门的治疗。针对性治疗的有效率 51%，普通心理治疗是 28%，起效也更快。","c":"挂号费加治疗费。这类治疗按疗程做，试验里平均 19 周做 16 次。难在要自己迈出去挂这个号。","b":"14 项研究合起来算，对象是亲人不是死于暴力、本人也没在精神科就诊的成年人。延长哀伤障碍患病率 9.8%（95% CI 6.8–14.0），即每 100 个丧亲的成年人里约 10 个。年龄越大比例越高。另有一项研究检验这套诊断标准准不准，找了 291 名丧亲者，在丧亲后 0–6、6–12、12–24 个月分三次访谈。诊断的核心表现是对逝者的强烈想念。还要加上这九项里的至少五项。前五项是情感麻木、震惊、觉得生活没有意义、不信任他人、因这次失去而痛苦。后四项是难以接受、认不清自己该是谁、回避现实、无法继续生活。这些表现要每天都出现，或者严重到干不了事。而且在亲人去世至少 6 个月后仍然存在，还影响着日常生活。还有一项 95 人抽签分两组的试验，做 16 次治疗、平均 19 周。针对复杂哀伤的治疗有效率 51%。普通的人际心理治疗 28%（P=0.02，差别不太可能是碰巧）。前者起效也更快。需治疗人数 4.3，即平均每治 4.3 个人就多一个好转","e":"A","src":"Lundorff M, et al. (2017). Prevalence of prolonged grief disorder in adult bereavement: A systematic review and meta-analysis. Journal of Affective Disorders. <https://doi.org/10.1016/j.jad.2017.01.030>；Prigerson HG, et al. (2009). Prolonged grief disorder: Psychometric validation of criteria proposed for DSM-V and ICD-11. PLoS Medicine. <https://doi.org/10.1371/journal.pmed.1000121>；Shear MK, et al. (2005). Treatment of complicated grief: a randomized controlled trial. JAMA. <https://doi.org/10.1001/jama.293.21.2601>","r":"别自己卡月份。真正的判断是「影响到吃饭、睡觉、上班、带孩子」，对上了就去挂号。科室叫精神科、心理科或临床心理科，公立精神专科医院都有。这个诊断在不同资料里叫复杂哀伤，也叫延长哀伤障碍。不同标准要求持续多久也不一样，有的写 6 个月，有的写 12 个月。9.8% 这个比例来自 14 项做法差异不小的研究，作者也提醒它未必能照搬到别的人群身上。","g":"钱=少 时间=中 毅力=些 收益=大 口径=死亡率","d":"mind"},{"k":"4-1","s":4,"st":"4. 不要浪费时间","n":1,"t":"把「打算做」写成「几点、在哪、遇到什么就做什么」","p":"把「我要做这件事」改写成「周二早 8 点坐到书桌前就先写引言」。94 项检验合起来算，这么写的人把目标做成的比例明显更高，属于中到大的效果。改的只是一句话的写法，不花钱，也不费力气。","c":"不花钱。每件事花 1 到 2 分钟，写一句「如果……就……」。比如「周二早 8 点坐到书桌前就先写引言」。","b":"把 94 项独立检验合起来算，先把打算写成「如果……就……」的人，目标达成率更高。这种写法在心理学里叫实施意图。效果大小 d = 0.65，算中到大。管用的环节有三个：开始动手、被打扰的时候顶住、从注定做不成的事上撤出来。","e":"A","src":"Gollwitzer, P. M., & Sheeran, P. (2006). Implementation intentions and goal achievement: A meta-analysis of effects and processes. Advances in Experimental Social Psychology, 38, 69–119. <https://doi.org/10.1016/S0065-2601(06)38002-1>","r":"这招只对你自己真想做的事有效。目标本身你就不想要，写再多句也没用。另外，这些研究找的多是学生，看的多是健康方面的习惯，搬到工作场景不一定同样管用。","g":"钱=0 时间=少 毅力=否 收益=大 口径=时间","d":"mind"},{"k":"4-8","s":4,"st":"4. 不要浪费时间","n":8,"t":"给没有外部截止的事自己定一个日期","p":"有别人定的截止日期时，80.6% 的学生能在那之前做完。按自己预计的时间做完的，只有 38.7%。什么时候做完，几乎由截止日期决定，和自己估的关系不大。所以没有截止日期的事，自己给它定一个，并且认账。","c":"不花钱。难在定了就要认，到了那天不当回事就等于没定。","b":"有外部截止日期的学生，80.6% 在截止前完成。而在自己预计的时间内完成的，只有 38.7%。什么时候做完，几乎跟着截止日期走，相关系数 r = 0.82，这个数越接近 1 说明跟得越紧。和自己的预计只有很弱的关系。","e":"B","src":"Buehler, R., Griffin, D., & Ross, M. (1994). Exploring the \"planning fallacy\": Why people underestimate their task completion times. Journal of Personality and Social Psychology, 67(3), 366–381. <https://doi.org/10.1037/0022-3514.67.3.366>","r":"把自己定的日期告诉别人，它就更接近别人定的那一种。要说明的是，研究验证的是别人定的截止日期管用。自己给自己定的那种，比如时间盒、番茄钟，没人直接测过，这里是照着推的。","g":"钱=0 时间=少 毅力=些 收益=大 口径=时间","d":"mind"},{"k":"3-13","s":3,"st":"3. 不要浪费精力","n":13,"t":"每周工作时间不要超过 49 小时","p":"一战时英国军工厂的记录显示，每周干 49 小时以内，干多久就出多少活。超过 49 小时，多干一小时多出的活越来越少。一周干 70 小时和干 56 小时出的活几乎一样，多干的那 14 小时是白干。","c":"可能少拿一些加班费。也可能要花力气和上级谈。","b":"一战时期英国军工厂工人的产出记录：每周 49 小时以内，产出与工时成正比。超过 49 小时，产出的增速开始变慢。大约 63 小时达到最大。干 70 小时的产出与干 56 小时几乎没有差别，多干的 14 小时等于白干。","e":"B","src":"Pencavel (2015). The Productivity of Working Hours. The Economic Journal. <https://doi.org/10.1111/ecoj.12166>","r":"数据来自一百年前的工厂，干的是体力活，工人以女性为主。这道坎搬到脑力工作上不一定一样，作者自己也说别的工种可能更高或更低。可靠的是方向：过了某个点，再多干也几乎不多出活。49 这个具体数字不可靠。","g":"钱=少 时间=少 毅力=些 收益=大 口径=时间","d":"mind"},{"k":"5-27","s":5,"st":"5. 不要浪费钱","n":27,"t":"先存出 3 到 6 个月生活费的应急金，放在随时能取的地方","p":"把 3 到 6 个月的生活费放在随时能取出来的地方。这样失业或者生病的时候，你就不用去借那种一年要付 18% 利息的钱，也不用亏着把手里的投资卖掉。存在银行里的钱有存款保险，同一家银行最高赔 50 万元。","c":"不花钱。代价是这笔钱要放弃更高的收益，只能放在活期、货币基金，或者随时能取的存款里。难的是攒的过程中忍住不动它。","b":"有了应急金，失业或者生病的时候你就不用去借钱，也不用亏着把投资卖掉。消费贷和信用卡最低还款按年算的利率，见本节第 7 条（不用信用卡最低还款）。存在银行里的钱受存款保险保护，同一家银行最高偿付 50 万元（中国，2015 年）","e":"C","src":"国务院 (2015). 存款保险条例（国务院令第 660 号，第五条）. <https://www.gov.cn/zhengce/content/2015-03/31/content_9562.htm>","r":"「3 到 6 个月」是大家通行的经验，没有找到官方或者学术上的原始出处，所以标成 C 级。金额按你自己每月的固定支出来算，不按收入算。不构成投资建议。","g":"钱=0 时间=少 毅力=些 收益=大 口径=金钱","d":"money"},{"k":"5-6","s":5,"st":"5. 不要浪费钱","n":6,"t":"看到「高收益」「保本」「稳赚」直接走开","p":"监管部门自己的说法是：收益率超过 6% 就要打问号，超过 8% 很危险，10% 以上就要准备赔光本金。正规理财已经不许承诺保本保收益了。参加非法集资亏掉的钱，按规定由你自己承担，出事没人替你兜底。","c":"不花钱。听到这几个词的时候停一下就行。","b":"原银保监会主席 2018 年在陆家嘴论坛上说过一句话。原话是：「收益率超过 6% 的就要打问号，超过 8% 的就很危险，10% 以上就要准备损失全部本金」。资管新规要求金融机构「不得承诺保本保收益」，还要求「出现兑付困难时，金融机构不得以任何形式垫资兑付」。所以正规理财已经没有保本这一说。参与非法集资的损失「由集资参与人自行承担」，出事以后没有人替你赔（中国，2018、2021 年）","e":"A","src":"郭树清 (2018). 防范化解金融风险 奋力跨越重大关口（第十届陆家嘴论坛讲话，国家金融监督管理总局官网）：「在打击非法集资过程中，努力通过多种方式让人民群众认识到，高收益意味着高风险，收益率超过6%的就要打问号，超过8%的就很危险，10%以上就要准备损失全部本金」. <https://www.nfra.gov.cn/cn/view/pages/ItemDetail.html?docId=182418>；天津市地方金融管理局转载. <https://jrgz.tj.gov.cn/ztlm/ztzl/jrjfwphjr/202006/t20200625_2744709.html>；中国人民银行等 (2018). 关于规范金融机构资产管理业务的指导意见（银发〔2018〕106 号，第二条、第六条）. <https://www.gov.cn/gongbao/content/2018/content_5323101.htm>；国务院 (2021). 防范和处置非法集资条例（国务院令第 737 号，第二十五条）. <https://www.gov.cn/gongbao/content/2021/content_5588815.htm>","r":"6%、8%、10% 这三条线是监管者按经验画的，不是法律条文。原话是在讲打击非法集资时说的，针对的是承诺高回报的理财产品和投资公司。不构成投资建议。","g":"钱=0 时间=少 毅力=否 收益=大 口径=金钱","d":"money"},{"k":"5-16","s":5,"st":"5. 不要浪费钱","n":16,"t":"不借钱投资、不加杠杆、不买自己看不懂的","p":"借钱买股票，一旦跌破线，你又补不上钱，就会被强制卖掉。账面上的亏损当场变成真亏，连「等它涨回来」的机会都没有。监管规定，开户不满半年、最近 20 个交易日日均资产不到 50 万元的人，不能开融资账户。这个门槛本身就说明，它不是给普通人用的。","c":"不花钱。难的是行情好的时候，要忍住不去想「借点钱多赚一点」。","b":"杠杆就是借钱来买，它会把亏损放大。你用融资买入以后，抵押物的市值可能跌到维持担保比例线以下。这条线是券商划的，管的是你抵押在它那里的东西。跌破了这条线，你又没能追加担保把它补回来，就会被强制平仓，由券商直接替你卖掉。账面上的亏损当场变成真亏，没有「等它涨回来」的机会。监管规定，「从事证券交易时间不足半年、缺乏风险承担能力、最近 20 个交易日日均证券类资产低于 50 万元」的客户，不得开立信用账户。这个门槛本身就说明，它不是给普通人用的工具（中国，2015 年）","e":"B","src":"中国证监会 (2015). 证券公司融资融券业务管理办法（证监会令第 117 号，第十二条）. <https://www.csrc.gov.cn/csrc/c106256/c1654005/content.shtml>；上海证券交易所. 《上海证券交易所融资融券交易实施细则》解读（投资者教育材料）. <https://www.sse.com.cn/services/tradingservice/margin/edu/c/10074042/files/a1f1c4833302451fb9130dbb94116c56.pdf>","r":"「看不懂的不买」这句没有直接的文献支持，属于共识，单算是 C 级。用消费贷或者信用卡套现去投资，也是变相的杠杆，它们的利率见本节第 7 条（不用信用卡最低还款）。不构成投资建议。","g":"钱=0 时间=少 毅力=些 收益=大 口径=金钱","d":"money"},{"k":"7-1","s":7,"st":"7. 没钱的时候怎么活","n":1,"t":"失业了先在线申领失业保险金","p":"单位和你自己交满 1 年、又不是你主动提的辞职，办完失业登记就能领钱。交满 1 年不到 5 年，最多领 12 个月。满 5 年不到 10 年，最多 18 个月。10 年以上，最多 24 个月。领钱这段时间，职工医保有失业保险替你交。","c":"不花钱。用手机就能交申请，三个入口都行：「掌上 12333」App、微信或支付宝里的电子社保卡小程序、国家社会保险公共服务平台。手上有社保卡或者身份证就能办，多数地区不用跑现场。前提是先办好失业登记。","b":"要同时满足三个条件。一是单位和你本人交失业保险累计满 1 年。二是不是你自己主动提的辞职（法律叫「非因本人意愿中断就业」）。三是已经办了失业登记，并且有找工作的意愿。能领多久按缴费年限算。累计满 1 年不足 5 年，最长领 12 个月。满 5 年不足 10 年，最长 18 个月。10 年以上，最长 24 个月。每月发多少由省级政府定，各省不一样。金额低于当地最低工资，高于城市低保。国家的目标是逐步提到最低工资标准的 90%。领失业保险金这段时间，你照样参加职工基本医疗保险、享受基本医疗保险待遇。该交的那笔基本医疗保险费从失业保险基金里出，你个人不交（全国，条例 1999 年起施行）","e":"A","src":"国务院 (1999). 失业保险条例（国务院令第 258 号，第十四、十六、十七、十八条；第十六条：「失业保险金自办理失业登记之日起计算」）. <https://xzfg.moj.gov.cn/front/law/detail?LawID=517>；人力资源社会保障部. 全国人社政务服务平台·失业保险待遇申领办事指南. <https://www.12333.gov.cn/portal/common/bszn/sydysl?pfaId=202105281700000004>；国家发展改革委就业司 (2022). 失业保险金标准，将逐步提高至最低工资的 90%. <https://www.ndrc.gov.cn/fggz/jyysr/jysrsbxf/202206/t20220627_1328819.html>；辽宁省人力资源和社会保障厅 (2019). 关于进一步调整失业保险金标准的通知：「为落实《人力资源社会保障部财政部关于调整失业保险金标准的指导意见》(人社部发〔2017〕71号〕\"逐步将失业保险金标准提高到最低工资标准的90%\"等要求」. <https://rst.ln.gov.cn/rst/zfxx/zc/ywfl/shbx/2024092014161280895/index.shtml>；全国人大常委会 (2010). 社会保险法（第四十八条）. <https://fgk.chinatax.gov.cn/zcfgk/c100009/c5192937/content.html>（国家税务总局政策法规库）","r":"自己主动辞职的，不算「非因本人意愿」，领不了。所以离职时别签「个人原因主动辞职」，见第 19 节第 7 条。失业保险金从办失业登记那天起算，晚办一个月就少拿一个月的钱。走人之后第一件事就是去登记。登记要用单位开的离职证明，见第 19 节第 17 条（离职证明）。竞业协议要不要守、公司不给补偿怎么办，见第 11 节第 12 条（签了竞业协议）。领取期间的职工医保由失业保险替你交。各省金额差得多，以你参保那个地方公布的为准。「最低工资 90%」出自人社部、财政部 2017 年的指导意见（人社部发〔2017〕71 号），原话是「逐步将失业保险金标准提高到最低工资标准的90%」。这是目标，不是现在就按 90% 发。人社部官网的原文页在本机打不开，这句按辽宁省人社厅文件里的引文核对。","g":"钱=0 时间=少 毅力=否 收益=大 口径=金钱","d":"money"},{"k":"7-9","s":7,"st":"7. 没钱的时候怎么活","n":9,"t":"居民医保每年 400 元不要断，困难户可减免","p":"个人一年交 400 元起，财政再按人头补 700 元上下。特困人员全额资助，低保对象定额资助。断缴是有代价的：没在集中期参保、或者没连着交的，交完之后有 3 个月看病不给报，每多断 1 年原则上再多加 1 个月。","c":"自己交的那部分，每人每年不低于 400 元。这是 2024、2025 年的国家标准，各地可以比这个高。要在每年固定的那段集中缴费期里交。特困人员是全额资助，这笔钱全由政府出。低保对象是定额资助，政府出固定的一部分。","b":"除了自己交的那部分，财政再按人头补一笔。2024 年不低于 670 元，2025 年比上年提高 30 元，不低于 700 元，个人缴费仍是不低于 400 元（医保发〔2025〕22 号，按省级文件转述）。2026 年的政府工作报告里说再提高 24 元。低保对象和特困人员，符合规定的医疗费，医保报完之后剩下的部分，还能按不低于 70% 的比例走医疗救助再报一次。断缴的代价是等待期。没在集中缴费期参保、或者没连着交的，交完之后有 3 个月固定待遇等待期，这段时间看病不给报。每多断 1 年，原则上再加 1 个月（2025 年起，全国）","e":"A","src":"国家医保局 (2024). 《关于做好 2024 年城乡居民基本医疗保障有关工作的通知》政策解读（医保发〔2024〕19 号）. <https://www.nhsa.gov.cn/art/2024/8/26/art_105_13634.html>；河北省医疗保障局等 (2025). 关于做好 2025 年城乡居民基本医疗保障有关工作的通知（冀医保发〔2025〕6 号，地方文件）. <https://www.renqiu.gov.cn/renqiu/ybjbmwj/202510/6d90754638a248cba655e94ea518a3bb.shtml>；安徽省医疗保障局等 (2025). 关于做好 2025 年城乡居民基本医疗保障有关工作的通知（淮北市医保局转载）：「按照国家医保局、财政部、国家税务总局《关于做好2025年城乡居民基本医疗保障有关工作的通知》（医保发〔2025〕22号）要求」「居民医保人均财政补助标准较上年提高30元，达到每人每年不低于700元」. <https://ybj.huaibei.gov.cn/zcwj/zcwj/58004084.html>；国务院办公厅 (2021). 关于健全重特大疾病医疗保险和救助制度的意见（国办发〔2021〕42 号）. <https://www.gov.cn/gongbao/content/2021/content_5659514.htm>；国务院办公厅 (2024). 关于健全基本医疗保险参保长效机制的指导意见（国办发〔2024〕38 号）. <https://www.gov.cn/zhengce/content/202408/content_6965741.htm>；国家医保局 (2026). 2026 年政府工作报告提到这些医保工作. <https://www.nhsa.gov.cn/art/2026/3/5/art_14_19809.html>","r":"国家医保局 2025 年那份通知（医保发〔2025〕22 号）没有在医保局官网和中国政府网公开挂出。700 元和 400 元两个数在河北、安徽两省的文件里一致，安徽那份写明是按这份通知定的。领失业保险金那段时间，职工医保由失业保险替你交，不必重复参保。","g":"钱=少 时间=少 毅力=否 收益=大 口径=金钱","d":"money"},{"k":"5-44","s":5,"st":"5. 不要浪费钱","n":44,"t":"保单上把受益人写成具体的人，出了事记得去领钱：寿险 5 年、其他保险 2 年内要主张","p":"没写受益人，或者受益人先走了，保险金就算遗产，要先拿去还去世的人欠的债。受益人写了「妻子某某」，后来离婚了，出事时算没写。家里人要知道有这张保单：寿险从知道出事起 5 年内要去主张，其他保险是 2 年。","c":"不花钱。投保时填一次，以后改受益人要书面通知保险公司。","b":"保险法规定，受益人由被保险人或者投保人指定。投保人指定的，要经被保险人同意。有三种情况，保险金算被保险人的遗产，按继承的规矩给。一是没指定受益人，或者指定得不清楚。二是受益人死在被保险人前面，又没有别的受益人。三是受益人依法丧失或者放弃受益权，又没有别的受益人。受益人和被保险人在同一件事里去世、分不清先后的，推定受益人先死。算作遗产的钱，要先清偿去世的人欠的税和债，剩下的才分。最高法的解释写明：受益人写成「姓名加身份关系」，出事时身份关系变了，算没指定受益人。改受益人没通知保险公司的，对保险公司不生效。领钱的诉讼时效，人寿保险是 5 年，其他保险是 2 年，都从知道或者应当知道出事那天算起。寿险保额通常在数十万元级，收益因此定为大（全国，2015 年修正、2021 年起）","e":"A","src":"全国人大常委会 (2015 修正). 中华人民共和国保险法第二十六、三十九、四十一、四十二条. <https://flk.npc.gov.cn/detail?id=2c909fdd678bf17901678bf7c4060811>；最高人民法院 (2020 修正). 关于适用《中华人民共和国保险法》若干问题的解释（三）第九条第二款第三项、第十条. <https://flk.npc.gov.cn/detail?id=ff808181799df4000179ac03d7f21115>；全国人大 (2020). 中华人民共和国民法典第一千一百五十九条. <https://flk.npc.gov.cn/detail?id=ff808081729d1efe01729d50b5c500bf>","r":"诉讼时效过了，保险公司可以拒绝给钱，打官司也很难要回来。所以家里人至少要知道你在哪几家公司买过保险。离婚、再婚、孩子出生以后，回头把受益人改一次。人走了以后逐个去取各处的钱，见第 25 节第 9 条（逐个去取）。用死还债这条路走不通，见第 29 节第 13 条（还债）。这条的受益人落在第 ② 档，是你的配偶和孩子。","g":"钱=0 时间=少 毅力=否 收益=大 口径=金钱","d":"money"},{"k":"7-15","s":7,"st":"7. 没钱的时候怎么活","n":15,"t":"不交押金、不押证件、不签「培训贷」、不进传销、不借高利贷","p":"用人单位不能扣你的身份证，不能收押金，也不能换个名目收钱。中介没给你介绍成工作，必须退中介费。先交培训费再上岗的培训贷、靠拉人头算钱的传销，都是官方点名的骗局。借钱的利息超过一年期 LPR 四倍的部分，法院不支持，但本金照还。","c":"不花钱。遇到「先交钱再上岗」「先培训再安排工作」「拉人头」这三种说法，当场拒绝。留好聊天记录和转账凭证。难在越缺钱越想赌一把，当场说「不」不容易。","b":"公司不得扣押你的身份证等证件，不得要你找人担保，也不得换个名目收你的钱和物。违反的责令退还，并按每人 500 元以上 2000 元以下罚款。职业中介同样不得扣证件、收押金，工作没介绍成，必须把中介费退给你。打着招聘的名义，诱导你先交培训费或者先贷款，这是人社部等五部门点名提示的「招转培」「培训贷」骗局。靠拉人头算提成、交了钱才能加入的，属于传销，参加的人可罚 2000 元以下。民间借贷的利息，超过签合同时一年期 LPR 4 倍的那部分，法院不支持。这条新规矩取代了原来按 24%、36% 两条线划三段的老办法（全国，2020 年 8 月起）","e":"A","src":"全国人大常委会 (2007). 劳动合同法（主席令第六十五号，第九、八十四条）. <https://www.gov.cn/gongbao/content/2007/content_711013.htm>；劳动保障部 (2007). 就业服务与就业管理规定（劳动保障部令第 28 号，第十四、五十五、五十八条）. <https://www.gov.cn/zhengce/2022-11/28/content_5711307.htm>；人力资源社会保障部等五部门 (2026). 警惕「招转培」「培训贷」等风险提示. <https://chinajob.mohrss.gov.cn/h5/c/2026-05-18/543038.shtml>；国务院 (2005). 禁止传销条例（国务院令第 444 号，第二、七、二十四条）. <https://www.gov.cn/gongbao/content/2005/content_80604.htm>；最高人民法院 (2020). 关于修改《关于审理民间借贷案件适用法律若干问题的规定》的决定（法释〔2020〕6 号，第二十六条）. <https://www.court.gov.cn/fabu/xiangqing/249031.html>；最高人民法院 (2020). 民间借贷利率司法保护上限调整为「一年期 LPR 的 4 倍」. <https://www.court.gov.cn/zixun/xiangqing/249051.html>","r":"4 倍 LPR 是法院愿意保护的利息上限，不是「借了可以不还」，本金照还。这份司法解释 2020 年 12 月又改过一次，条文序号有变，以现行文本为准。分期和网贷的手续费怎么换算成年化利率，见第 5 节第 7 条（把利息换成年化利率）。越急着用钱，越容易被这些套路盯上。先走本节前面那几条正规渠道：失业保险金、劳动监察投诉、法律援助、救助站、临时救助。","g":"钱=0 时间=少 毅力=些 收益=大 口径=金钱","d":"money"},{"k":"7-18","s":7,"st":"7. 没钱的时候怎么活","n":18,"t":"社保断缴不要慌：养老按累计算，医保按规则补","p":"养老金按累计年限算，不按连续年限算，断了不清零，到退休年龄累计满 15 年就能按月领。职工医保交够年限的，退休后不用再交，各地的年限不一样，打 12393 问参保地。真正受影响的是买房、落户、积分这些要求连续缴费的资格。","c":"不花钱。居民养老、居民医保可以自己按年交。职工社保断了，不必为了「别断档」去花钱找人挂靠。","b":"基本养老保险按累计缴费年限算，中间断过也不清零。到法定退休年龄，累计满 15 年就能按月领养老金。不够的，可以接着缴到满 15 年。换个地方就业的（正式说法是跨统筹地区），养老关系跟着人走，缴费年限接着往上累计。职工医保累计缴费达到国家规定年限的，退休后不用再交。居民医保断缴的代价是等待期：重新交上之后，有一段时间看病不给报（居民医保见第 9 条）（全国）","e":"A","src":"全国人大常委会 (2010, 2018 修正). 社会保险法（第十六、十九、二十七条）. <https://www.gov.cn/guoqing/2021-10/29/content_5647616.htm>；国务院办公厅 (2024). 关于健全基本医疗保险参保长效机制的指导意见（国办发〔2024〕38 号）. <https://www.gov.cn/zhengce/content/202408/content_6965741.htm>","r":"职工医保退休不用再交的那个年限，法律写的是「国家规定年限」，各地执行的数不一样，男女也常常不同，打 12393 或者问参保地医保局。断缴主要影响当地那些要求连着交满多少个月的资格，比如买房、落户、积分，这些规则各地自己定，去当地查。花钱找人「挂靠」代缴，钱可能打水漂，也有法律风险，不建议。","g":"钱=0 时间=少 毅力=否 收益=大 口径=金钱","d":"money"},{"k":"8-19","s":8,"st":"8. 别把自己搭进去：法律与财产安全","n":19,"t":"维权有期限：民事诉讼时效 3 年，劳动仲裁 1 年，过了对方一句「超过时效」就够","p":"民事诉讼时效 3 年，从你知道权利受损那天算起。过了期，法院不会主动管，可对方在法庭上说一句「超过时效」就够了，钱还在，只是要不回来。而一条留了痕迹的催款消息，就能让这 3 年从头重算。劳动争议是另一套，仲裁时效 1 年。","c":"不花钱。催款别只在心里催，用微信、短信、邮件或者挂号信留下痕迹。","b":"民法典规定「向人民法院请求保护民事权利的诉讼时效期间为三年」。起算点是「权利人知道或者应当知道权利受到损害以及义务人之日起计算」，从你知道自己吃了亏、又知道该找谁的那天起算。最长不超过自权利受到损害之日起 20 年。期间届满的，「义务人可以提出不履行义务的抗辩」。法院不会自己去翻时效，但对方在法庭上一提就有效，钱还在，只是要不回来了。有四种事情会让时效中断，一中断就从头重新计算 3 年。一是你向欠你的人提出要他履行。二是对方答应履行。三是你去起诉或者申请仲裁。四是和这些效力相同的其他情形。约定分期还的，从最后一期到期那天起算。有四类要求不受时效限制：要求停止侵害、排除妨碍、消除危险；要回自己的不动产和已经登记的动产；抚养费、赡养费、扶养费；法律规定的其他情形。劳动争议是另一套：仲裁时效 1 年，从知道或者应当知道权利被侵害之日起算。但「劳动关系存续期间因拖欠劳动报酬发生争议的，劳动者申请仲裁不受本条第一款规定的仲裁时效期间的限制；但是，劳动关系终止的，应当自劳动关系终止之日起一年内提出」（全国）","e":"A","src":"全国人大 (2020). 民法典（第一百八十八、一百八十九、一百九十二、一百九十三、一百九十五、一百九十六、一百九十七条）. <https://www.spp.gov.cn/spp/fl/202006/t20200602_463888.shtml>；全国人大常委会 (2007). 劳动争议调解仲裁法（第二十七条）. <https://rsj.ankang.gov.cn/Content-2150407.html>（安康市人力资源和社会保障局转载）","r":"这大概是全书最便宜的一件事：一条留了痕迹的催款消息，就能把 3 年重新起算；什么都不做，就可能白白丢掉打赢官司的资格。事先说好「我不拿时效说事」不算数，两边约定把 3 年改长改短也不算数。反过来，过了期限对方仍然答应还的，就不能再拿时效来拒绝还钱。已经自愿还了的，也不能再要回去。借条和担保见第 18 条（借条和担保）。被执行的阶段见第 20 条（被起诉、被执行了如实报财产）。加班费和未休年休假工资走劳动仲裁那一套，见第 19 节第 1、2 条。","g":"钱=0 时间=少 毅力=否 收益=大 口径=金钱","d":"law"},{"k":"8-8","s":8,"st":"8. 别把自己搭进去：法律与财产安全","n":8,"t":"不把银行卡、手机卡、支付账号借给任何人，「跑分」不是兼职","p":"把银行卡、手机卡、支付账号租给、借给、卖给别人，这件事本身就违法。罚违法所得的 1 到 10 倍，没有所得的最高罚 20 万元，情节严重的拘留 15 日，还会被记入信用记录、限制账户功能。要是明知对方拿去犯罪还帮着收钱转钱，就是帮信罪，判 3 年以下。","c":"不花钱。有人说「借卡走个账，给你几百块」，拒绝就行。","b":"出租、出借、买卖电话卡、银行账户、支付账户、互联网账号，这件事本身就是违法。没收违法所得，再罚违法所得的 1 到 10 倍。没有违法所得的，最高罚 20 万元。情节严重的，拘留 15 日以下。还可能被记入信用记录、限制账户功能、停掉非柜面业务（只能去柜台办）。明知别人用网络实施犯罪，还给他提供支付结算这类帮助，情节严重的，构成帮助信息网络犯罪活动罪（简称帮信罪），判 3 年以下并处罚金（全国）","e":"A","src":"全国人大常委会 (2022). 反电信网络诈骗法（第三十一、四十四条）. <https://www.spp.gov.cn/spp/fl/202209/t20220902_575631.shtml>；全国人大常委会 (2015). 刑法修正案（九）（第二十九条，即刑法第二百八十七条之二）. <https://www.spp.gov.cn/spp/fl/201802/t20180205_364562.shtml>","r":"说「我不知道他拿卡去干什么」挡不住。办案时会从外在情形反推你知不知情：收过好处费、流水明显不正常，都可能算你知道。卡被人用来收赃款的，就算你最后不构成犯罪，账户也会被冻结，本人也会被惩戒。替别人刷脸、念验证码过实名核验，罚则和这条相同，见第 45 条（帮忙刷个脸）。","g":"钱=0 时间=少 毅力=否 收益=大 口径=自由","d":"law"},{"k":"8-3","s":8,"st":"8. 别把自己搭进去：法律与财产安全","n":3,"t":"记住反诈硬规则：来电不轻信、信息不透露、链接不点击、转账多核实，七种最常见的骗局都是这个形状","p":"凡是让你转账、共享屏幕、下载陌生 App、点链接、报验证码的，先挂断，再用官方号码打回去核实。刷单返利、虚假投资理财、网络贷款、冒充客服、冒充公检法、杀猪盘、色诱刷单这七类最常见，都是要你先转钱。事前认出来，比事后追钱便宜得多。","c":"不花钱。把「三不一多」记住，读一遍下面那七类，再装一个「国家反诈中心」App，96110 来电必接。凡是让你转账、共享屏幕、下载陌生 App、点链接、报验证码的，先挂断，再打官方电话核实。难在对方往往催得很急，你要顶住这股催促先挂断。","b":"法律要求政府和有关部门把各类电信网络诈骗的手法讲给大家。公安机关会同金融、电信、网信部门建立预警劝阻系统，发现可能要被骗的人就及时劝阻。96110 就是这条全国统一的预警劝阻热线，来电要接。公安部 2026 年 6 月通报，最高发的 10 类诈骗占了全部电诈案件的 85%。刷单返利发案最多，占 25%。虚假网络投资理财损失最大，约占全部损失的 40%。福建省公安厅逐类拆解的识别特征如下。刷单返利：「喊你一起赚钱的大概率是想赚你的钱」，任务单做不完就不退本金。虚假投资理财：群里「水军」晒收益，先给小额返利再让你加大投入，提现要「缴税」。网络贷款：「贷款并不需要交保证金、做银行流水账，一旦遇上了，一定是假的」。冒充客服：说你开了会员要自动扣费、影响征信，逼你转账取消。冒充公检法：「公检法机关不存在所谓的『安全账户』，凡是通过电话、QQ、微信、网络等办案、做笔录的『公检法机关』，都是诈骗」。杀猪盘：「对于从未见过面，只见到照片或者视频的『恋人』，不可轻信」，永远不视频不见面却常有急事要钱。色诱刷单：约见面先「做任务」，钱越交越多。事前认出来，比事后止付便宜得多。止付能追回多少，取决于报警时钱还在不在账上，止付怎么做见第 2 条（打 110 或 96110 要求止付）（全国，2022 年 12 月起）","e":"B","src":"全国人大常委会 (2022). 反电信网络诈骗法（第八、二十、三十四条）. <https://www.spp.gov.cn/spp/fl/202209/t20220902_575631.shtml>；公安部 (2026). 公安部发布会：通报当前电信网络诈骗犯罪的最新形势、特点提示防范电信网络诈骗要点（2026 年 6 月 12 日）：「以上这10类案件就占了全部电诈案件的85%。其中，刷单返利诈骗发案最高，占所有电诈案件的25%；虚假网络投资理财诈骗损失最高，约占全部电诈案件损失的40%」. <https://www.mps.gov.cn/n2254536/n2254544/n2254552/n10491781/index.html>；福建省公安厅 (2023). 96110 来电，请务必接听. <http://gat.fujian.gov.cn/ztzl/fjjffpzxrx/spjq/202303/t20230306_6126156.htm>（省级公安机关页面，含「来电不轻信，信息不透露，链接不点击，转账多核实」口诀及「警惕 192 开头的诈骗电话」提示）；福建省公安厅 (2023 到 2024). 识骗技巧专栏：刷单 <http://gat.fujian.gov.cn/ztzl/fjjffpzxrx/spjq/202307/t20230703_6196881.htm>；投资理财 <http://gat.fujian.gov.cn/ztzl/fjjffpzxrx/spjq/202312/t20231220_6362145.htm>；贷款 <http://gat.fujian.gov.cn/ztzl/fjjffpzxrx/spjq/202312/t20231207_6326741.htm>；冒充客服 <http://gat.fujian.gov.cn/ztzl/fjjffpzxrx/spjq/202310/t20231020_6279505.htm>；冒充公检法 <http://gat.fujian.gov.cn/ztzl/fjjffpzxrx/spjq/202309/t20230913_6255863.htm>；杀猪盘 <http://gat.fujian.gov.cn/ztzl/fjjffpzxrx/spjq/202308/t20230818_6232030.htm>；色诱刷单 <http://gat.fujian.gov.cn/ztzl/fjjffpzxrx/spjq/202403/t20240307_6410612.htm>","r":"自称公检法、客服、领导、平台风控，要你「配合调查」「取消会员」「刷单返利」「投资内幕」的，都是同一个套路。真贷款不需要交保证金，公检法没有「安全账户」，这两句记住就能挡掉一大半。定 B 级是因为这句口诀只是官方的宣传口径，没有「记住之后少被骗多少」的数字。口诀和七类拆解取自省级公安厅的页面。公安部 2026 年通报的 10 类高发诈骗还包括冒充电商物流客服、贷款征信、网络游戏虚假交易、网络婚恋交友、冒充领导熟人和机票退改签，套路都一样，最后都要你转钱。熟人当面找你「帮忙刷个脸」办贷款，不让你转钱，却让你背债，见第 45 条（帮忙刷个脸）。做生意时撞上的代运营骗局，见第 12 节第 24 条（代运营网店）。","g":"钱=0 时间=少 毅力=些 收益=大 口径=金钱","d":"law"},{"k":"8-17","s":8,"st":"8. 别把自己搭进去：法律与财产安全","n":17,"t":"签字前把纸看完，不替人签字，不在空白纸上签","p":"签了就算数，按手印和签名一样算数。「没看清」「以为是别的」在法庭上基本站不住。所以多花几分钟从头读到尾，看不懂的当场问，拍照留底。不替别人签，不在空白纸上签，身份证复印件写清用途。电子签和刷脸确认，同样算签字。","c":"不花钱。多花几分钟，把合同、借条、担保书、入职文件从头读到尾。看不懂的当场问，再拍照留底。难在当着对方的面慢慢看完。","b":"依法成立的合同受法律保护，对签字的双方都有约束力。签了就要按约定全面履行。民法典第四百九十条写着，用合同书订合同的，双方「签名、盖章或者按指印时合同成立」。按手印和签名、盖章是并列的三种办法，按了手印合同一样成立。「没看清」「以为是别的」在法庭上很难成立。不签，就不会背上不属于自己的债务和责任（全国）","e":"A","src":"全国人大 (2020). 民法典（第四百六十五、四百九十、五百零九条）. <https://www.spp.gov.cn/spp/fl/202006/t20200602_463888.shtml>","r":"「不替人签字、不签空白纸、身份证复印件写明用途」是经验做法，没有单独的官方文件。它们的目的是一样的：别让你的签名被拼进一份法律上成立、你又不得不认的合同里。电子签、刷脸确认同样算签字。熟人让你帮忙刷脸、签字办贷款的，见第 45 条（帮忙刷个脸）。","g":"钱=0 时间=少 毅力=些 收益=大 口径=金钱","d":"law"},{"k":"9-16","s":9,"st":"9. 普通人容易踩的法律红线","n":16,"t":"身份证不借人，不用别人的身份证，也不拿别人的证件登记、开卡、买票","p":"把身份证借给、租给、转给别人，警告并罚 200 元以下。冒用别人的身份证，或者用骗领来的，罚 200 到 1000 元，或者拘留 10 日以内。买火车票、住店这类必须实名的场合用假证件或者别人的证件，情节严重的判拘役或者管制。","c":"不花钱。有人开口借，拒绝就行。要给复印件的，在复印件上写明这份只用在哪件事上。","b":"把自己的居民身份证出租、出借、转让给别人的，警告并罚 200 元以下。冒用别人的身份证，或者使用骗领来的身份证，罚 200 到 1000 元，或者拘留 10 日以下。购买、出售、使用伪造变造的身份证的，也是这一档。有些场合按国家规定必须出示身份证明。在这些场合使用伪造、变造或者盗用别人的证件，情节严重的就要判刑。证件包括身份证、护照、社保卡、驾驶证等。刑罚是拘役（短期关押）或者管制（不关押但行动受限），还要并处或者单处罚金，判刑的同时罚钱，也可能只罚钱（全国）","e":"A","src":"全国人大常委会 (2011). 居民身份证法（2011 年修正，第十六、十七条）. <https://jtgl.beijing.gov.cn/jgj/jgxx/flfg/fl/203777/index.html>（北京市公安交通管理局转载）；全国人大 (2020). 刑法（根据刑法修正案（十一）修正，第二百八十条之一）. <https://jtgl.beijing.gov.cn/jgj/jgxx/flfg/fl/11033925/index.html>；国务院 (2002). 互联网上网服务营业场所管理条例（国令第 363 号，第二十三条）. <http://www.gov.cn/gongbao/content/2002/content_61788.htm>","r":"身份证借出去，可能被拿去注册公司、办银行卡。这两样的后果见第 8 节第 28、8 条（别当挂名法人、不把银行卡借给人）。用别人的身份证买火车票、住店，属于法条说的「应当提供身份证明的活动」。本条没有找到官方案例。去网吧上网也一样用自己的证。网吧必须核对登记身份证，登记内容和上网记录至少存 60 天，公安和文化部门随时能调。用谁的证上网，那段时间机器上干的事就记在谁头上。","g":"钱=0 时间=少 毅力=否 收益=大 口径=自由","d":"law"},{"k":"12-1","s":12,"st":"12. 创业与做生意：别把家底赔进去","n":1,"t":"只拿亏得起的钱创业，不动家底、不借钱开张","p":"个体户欠的钱，要拿你自己名下的钱和东西还。分不清是不是全家一起做的，就拿全家的财产还。开公司也不保险：公司还不上债的时候，你当初答应出、还没到期的那笔出资，会被要求提前掏出来。所以投多少，按「全亏光也照样还房贷、看病」来定。","c":"不花钱。动手前先给自己定一个数：这笔钱全亏光，也不影响你还房贷、养孩子、看病。超过这个数就不投。家里人的钱和借来的钱，不算在这个数里。难的是生意看着有起色的时候，忍住不再往里追加。","b":"亏了不只是钱没了。个体工商户欠的债，如果生意是你一个人做的，要拿你自己名下的钱和东西还（以个人财产承担）。如果是全家一起做的，或者分不清是谁做的，要拿全家的钱和东西还（以家庭财产承担）。夫妻两人都签了字的债，算两个人一起还的共同债务。一方事后点了头的，也算。一方用自己名义借的钱，只要债主能证明这笔钱用在了两口子一起做的生意上，照样两个人一起还。公司这边也有一条：公司还不上到期的债时，股东当初在注册资本里答应出、还没到缴纳期限的那笔钱（认缴出资），债主可以要求他提前交出来（全国）","e":"B","src":"全国人大 (2020). 民法典（第五十六、一千零六十四条）. <https://www.spp.gov.cn/spp/fl/202006/t20200602_463888.shtml>；全国人大常委会 (2023). 公司法（2023 年修订，第四十七、五十四条）. <https://www.gov.cn/yaowen/liebiao/202312/content_6923395.htm>","r":"「亏得起」的意思是：这笔钱全亏掉，你也不用卖房，不用找亲戚借钱补窟窿。有多少企业能活下来、平均活几年，这类官方统计本次在国家统计局和市场监管总局官网都没找到能核实的原文。所以正文不写数字，只写法律后果，定 B 级。","g":"钱=0 时间=少 毅力=些 收益=大 口径=金钱","d":"law"},{"k":"8-45","s":8,"st":"8. 别把自己搭进去：法律与财产安全","n":45,"t":"熟人让你「帮忙刷个脸、做个见证」去办贷款，或者要你念验证码，别答应：这叫 AB 贷，借款人是你，不是担保人","p":"所谓「帮忙刷个脸、做个见证」，其实是用你的名字向银行借钱。借款人是你，不是担保人，钱转给熟人以后，银行照样找你还。中介骗了你，但只要银行不知情，这份借款合同你就撤不掉。熟人写给你的「我来还」承诺书，也管不到银行。","c":"不花钱。难在当面拒绝亲戚朋友。对方说「只是做个见证」「不用你担责任」，也照样拒绝。手机、身份证、银行卡不交给中介，也不照中介的安排刷脸、签字。验证码只自己用，熟人要也不念。","b":"金融监管总局福建监管局 2022 年的风险提示讲了这个套路。客户 A 资质不够，贷不下来。中介说要加一个担保人，让 A 去找资质好的 B。实际办的时候，中介用 B 的身份信息申请贷款，钱给 A 用。原文说「借款人实质为B」，B「直至被银行催收才知本人是借款人而非担保人」。山东监管局 2024 年的提示说，中介会向 B 承诺「不用承担任何责任」。中介还会事先教 B 怎么应付银行的贷前调查，实际由 B 作为借款人申请贷款。上海普陀区法院 2024 年公布过一起案子。业务员拿着 B 的手机下载银行 App，直接用 B 的名义申请贷款。钱到了 B 的账户，B 转给了 A，A 又付了 8 万多元手续费。中介一伙 8 人以合同诈骗罪被判 10 个月到 4 年。中介判了刑，这笔贷款也不会因此变成别人的。民法典第一百四十九条写着，第三人欺诈的，对方「知道或者应当知道」，受骗的一方才能请求撤销。这里的对方是银行，银行不知情就撤不掉。能撤的，要在知道被骗之日起 1 年内向法院请求（第一百五十二条）。借款人要按约定的期限还钱（第六百七十五条）。合同只约束签合同的人（第四百六十五条）。把债转给别人，要经银行同意（第五百五十一条）。所以 A 写的承诺书管不到银行。钱只能自己起诉 A 去要。替人刷了脸、没看合同，法院也认。内江市市中区法院 2025 年审结过一个案子：蒋某向小贷公司借钱，自己一个人借不到。张某的儿子背着她，把她的身份信息给了蒋某，让她当共同借款人。借款流程里要她本人刷脸，她刷了，但没看合同。法院说她「应当预见人脸识别的重要性及法律后果」，判她和蒋某一起还剩下的本金 6 万多元。电子签名法写明，「可靠的电子签名与手写签名或者盖章具有同等的法律效力」。反电信网络诈骗法规定，任何人「不得提供实名核验帮助」，违反的要罚款，情节严重的拘留。普通程序一审 6 个月内审结，可以延长。律师费不在法定的诉讼费用里，要自己出（全国）","e":"B","src":"国家金融监督管理总局福建监管局（原福建银保监局） (2022). 关于防范不良贷款中介新型套路的风险提示（2022 年 9 月 14 日）. <https://www.nfra.gov.cn/branch/fujian/view/pages/common/ItemDetail.html?docId=1072844&itemId=1104&generaltype=0>；国家金融监督管理总局山东监管局 (2024). 风险提示：警惕非法贷款中介AB贷风险（2024 年 3 月 14 日）. <https://www.nfra.gov.cn/branch/shandong/view/pages/common/ItemDetail.html?docId=1154326&itemId=1269&generaltype=0>；上海市普陀区人民法院 (2024). 以案释法：征信不好仍可办理大额贷款？小心「AB贷」陷阱. <https://www.shpt.gov.cn/fyzx-fy/20240920/953017.html>（上海市普陀区人民政府网转载）；唐逸飞 (2025). 有必要对「助贷中介套路欺诈」予以刑事规制. 检察日报理论版. <https://www.spp.gov.cn/spp/llyj/202506/t20250607_697711.shtml>（最高人民检察院官网）；全国人大 (2020). 民法典（第一百四十九、一百五十二、四百六十五、五百五十一、六百七十五条）. <https://www.spp.gov.cn/spp/fl/202006/t20200602_463888.shtml>；全国人大常委会 (2023 修正). 民事诉讼法（第一百五十二条）. <https://fgw.sh.gov.cn/ys-syjf-zc-2.4.1-h5/20240408/073febdb2b04464390546232d4089f51.html>（上海市发展改革委转载）；国务院 (2006). 诉讼费用交纳办法（国务院令第 481 号，第六条）. <https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_6929.htm>；四川长安网（中共四川省委政法委员会主办，来源四川法治报）(2025). 一次「刷脸」让她背上数万元贷款 法院：当事人应当预见人脸识别的重要性及法律后果（2025 年 9 月 23 日）. <https://www.sichuanpeace.gov.cn/azsf/20250923/2992615.html>；山西省忻州市中级人民法院（转载人民法院报）(2021). 一女子「被刷脸」办卡贷款后被起诉还钱（2021 年 8 月 19 日）. <https://sxxzzy.shanxify.gov.cn/article/detail/2021/08/id/6215123.shtml>；全国人大常委会 (2019). 电子签名法（2019 年修正，第三、十三、十四、十五条）. <https://flk.npc.gov.cn/detail?id=ff8080816f135f46016f2163e4261aa1>；全国人大常委会 (2022). 反电信网络诈骗法（第三十一、四十四条）. <https://www.spp.gov.cn/spp/fl/202209/t20220902_575631.shtml>","r":"受益人主要是你自己，开口找你的 A 多半是家人或朋友。上海浦东一位检察长撰文说，B 往往碍于情面明知是自己贷款也照办，最后成了银行的催收对象。真想帮忙，先问清自己在合同上是什么身份，是借款合同就别签。愿意担保的，就以保证人的身份签保证合同，见第 18 条（替人担保）。已经被贷了款，先报警，再打放款银行官网上的电话说明情况，聊天和转账记录都留好。自己名下有几笔贷款，查征信见第 9 条（查征信报告）。银行贷前问话时别照中介教的说，作假可能自己担责，见第 9 节第 6 条（包装材料贷款）。刷脸和电子确认同样算签字，见第 17 条（签字前把纸看完）。法院也不是一律判本人还：广州互联网法院 2021 年判过，身份证被偷后当场报警挂失的人，银行拿不出她本人刷脸的证据就输了。所以身份证丢了要马上报警挂失，回执留好。机构要你刷脸时可以要别的方式，那是另一件事，见第 14 节第 9 条（刷脸不是必须答应的）。借你名字办事的同类套路见第 28 条（挂名法人）。手机和账户不外借，见第 8 条（不把银行卡借人）。给 B 是因为监管只给了套路和案例，没有被骗人数和金额的统计。","g":"钱=0 时间=少 毅力=些 收益=大 口径=金钱","d":"law"},{"k":"9-22","s":9,"st":"9. 普通人容易踩的法律红线","n":22,"t":"不卖自己的器官，也别帮人找供体：肾到手 2 万多，同一枚转手卖 20 万，钱要被没收还要按交易额罚 10 到 20 倍","p":"活体器官只能捐给配偶、直系血亲或者三代以内的旁系血亲，买卖都违法。北京一起案子里，卖肾的人只拿到 2 万多，同一枚肾卖给病人要 18 万到 22 万。卖得的钱会被没收，再按交易额罚 10 到 20 倍。摘肾后身体的代价见第 1 节第 35 条（剩下那个肾替两个干活）。","c":"不花钱，也不费时间，不去做就行。","b":"《人体器官捐献和移植条例》第五条：「任何组织或者个人不得以任何形式买卖人体器官，不得从事与买卖人体器官有关的活动」。第十条：「任何组织或者个人不得获取未满 18 周岁公民的活体器官用于移植」。第十一条：「活体器官的接受人限于活体器官捐献人的配偶、直系血亲或者三代以内旁系血亲」。第三十七条规定了买卖人体器官怎么罚。买卖人体器官或者从事与买卖人体器官有关活动的，由县级以上地方人民政府卫生健康部门查处。先没收违法所得，把这笔交易得来的钱全部收走。再按交易额罚 10 倍以上 20 倍以下的钱。医务人员参与的，吊销执业证书并终身禁止从事医疗卫生服务。构成犯罪的，依法追究刑事责任（全国，2024 年 5 月 1 日起施行，原《人体器官移植条例》同时废止）。刑法第二百三十四条之一：「组织他人出卖人体器官的，处五年以下有期徒刑，并处罚金；情节严重的，处五年以上有期徒刑，并处罚金或者没收财产」。还有三种情形，依照刑法第二百三十四条、第二百三十二条定罪处罚。一是未经本人同意摘取他的器官。二是摘取不满十八周岁的人的器官。三是强迫或者欺骗他人捐献器官。这几种按故意伤害、故意杀人处理。案例一：北京市第一中级人民法院 2014 年 8 月 20 日终审的郑伟等 15 人案，涉及 51 枚肾脏，涉案金额 1034 万余元。卖肾的人（供体）「换来的仅仅是 2 万到 2.5 万元不等的报酬」。等肾的病人一方（受体方）出的价码，「以前是一个肾 18 万或 19 万，后来是 21 万或 22 万」。摘肾点是每月 7500 元租的四层小楼，团伙护士长供述该处「脏乱不堪，连抢救设备都没有」。组织者郑伟以组织出卖人体器官罪判处有期徒刑 12 年，其余 14 人判 3 年半至 9 年。案例二：最高人民检察院公布的「少年卖肾买苹果手机」案。17 岁的王某 2011 年 4 月 28 日晚在郴州被切除右肾。动手术的场地，是一家没有移植资质的医院里由人承包的科室提供的。5 月 2 日出院时他拿到 2.2 万元，受体方付给中介的是 15 万元人民币和 1 万美元，主犯获利 5.6 万余元。王某术后肾功能不全，「伤情构成重伤、三级伤残」","e":"A","src":"国务院 (2023). 人体器官捐献和移植条例（国务院令第 767 号，第五、十、十一、三十七条）. <https://www.gov.cn/zhengce/zhengceku/202312/content_6920196.htm>；全国人大常委会. 中华人民共和国刑法（经刑法修正案十一修正的整合文本）第二百三十四条之一. <https://flk.npc.gov.cn/detail?id=ff808181796a636a0179822a19640c92>；最高人民检察院 (2012-04-09). 「少年卖肾买苹果手机」案诉至法院. <https://www.spp.gov.cn/gs/201204/t20120409_34342.shtml>；河北省廊坊市中级人民法院官网转载 (2014-09-02). 全国最大贩肾案终审 组织者摘肾 51 枚获利千万. <https://lfzy.hebeicourt.gov.cn/article/detail/2014/09/id/1430881.shtml>","r":"受益人是你自己。这笔交易表面上是「一次性拿两万」，实际是拿一个器官换一台手机。少年卖肾案的鉴定结论是重伤、三级伤残，休息几个月好不了。那起案子里，检方认定 5 名被告人触犯刑法第二百三十四条第二款，以故意伤害罪起诉。理由之一是医务人员术前没有核实「供体」是不是未成年人，就切了右肾。今天再出同样的事，拉人头的按组织出卖人体器官罪办，摘取不满十八周岁的人的器官，仍然依第二百三十四条按故意伤害罪定罪处罚。黑中介的手术在出租屋或者借来的场地做，没有配型之外的评估，也没有术后随访，出了并发症找不到人认账。真想给亲人捐，走第十一条那条路：在有移植资质的医疗机构做，经伦理委员会审查，全程不收钱。身后的遗体器官捐献是无偿的，不在本条范围。摘掉一个肾之后身体要付什么代价，见第 1 节第 35 条（剩下那个肾替两个干活）。缺钱缺到考虑卖器官的时候，先看第 7 节的救助渠道（失业保险、临时救助、低保）。网贷和「包装材料」贷款的坑，见本节第 6 条。","g":"钱=0 时间=少 毅力=否 收益=大 口径=自由","d":"law"},{"k":"19-7","s":19,"st":"19. 在职、离职和工伤","n":7,"t":"不要签「个人原因主动辞职」，那一签就没有 N 了","p":"签字承认「个人原因主动辞职」，经济补偿和失业保险金通常一起落空。自己提出离职，本来就不在给补偿的那几种情形里，公司欠薪、不缴社保这类过错除外。不必当天签，冷静一晚再说。","c":"不花钱。难在要顶住当场签字的压力。","b":"劳动合同法把该给经济补偿的情形限定在法律列明的那几类里。劳动者自己提出走人，不在里面，除非是因为公司欠薪、不缴社保这类法定过错。签了「主动辞职」，经济补偿和失业保险金通常一起落空","e":"B","src":"全国人大常委会 (2007). 中华人民共和国劳动合同法（2008 年 1 月 1 日施行）（第三十八条、第四十六条）. <http://www.gov.cn/gongbao/content/2007/content_711013.htm>","r":"公司常用的话术是「先签了好走流程，补偿另外给」。要就当场写进协议，不写就不签。当天不签不会有任何法律后果，冷静一晚再说","g":"钱=0 时间=少 毅力=是 收益=大 口径=金钱","d":"work"},{"k":"19-11","s":19,"st":"19. 在职、离职和工伤","n":11,"t":"上班受伤、上下班路上被撞，第一件事是做工伤认定，单位不报你自己报","p":"上班受伤算工伤。上下班路上被撞、主要责任不在你的，也算工伤。但不做工伤认定，医药费、养伤期间照发的工资、伤残补助金就全部落空。单位应当在 30 天内申报。单位不报的，你或者家属、工会可以在一年内自己去社保行政部门报。","c":"不花钱，跑一趟社保行政部门。要带三样材料：工伤认定申请表、劳动关系证明、医疗诊断证明。","b":"没做工伤认定，医药费、养伤期间照发的工资（停工留薪期工资）、伤残补助金就全部落空。单位超过 30 日不申报的，这段时间里该给的工伤待遇费用由单位自己掏","e":"A","src":"国务院 (2010 修订). 工伤保险条例（国务院令第 586 号）第十四条列了七种「应当认定为工伤」，含「（六）在上下班途中，受到非本人主要责任的交通事故或者城市轨道交通、客运轮渡、火车事故伤害的」；第十七条「所在单位应当自事故伤害发生之日或者被诊断、鉴定为职业病之日起30日内，向统筹地区社会保险行政部门提出工伤认定申请」「用人单位未按前款规定提出工伤认定申请的，工伤职工或者其近亲属、工会组织在事故伤害发生之日或者被诊断、鉴定为职业病之日起1年内，可以直接向用人单位所在地统筹地区社会保险行政部门提出工伤认定申请」「用人单位未在本条第一款规定的时限内提交工伤认定申请，在此期间发生符合本条例规定的工伤待遇等有关费用由该用人单位负担」；第十九条「职工或者其近亲属认为是工伤，用人单位不认为是工伤的，由用人单位承担举证责任」；第二十条「自受理工伤认定申请之日起60日内作出工伤认定的决定」；第五十五条，对「工伤认定申请不予受理的决定不服的」「对工伤认定结论不服的」，「可以依法申请行政复议，也可以依法向人民法院提起行政诉讼」. <https://www.gov.cn/gongbao/content/2011/content_1778064.htm>；最高人民法院 (2014). 关于审理工伤保险行政案件若干问题的规定（法释〔2014〕9 号）第七条：「由于不属于职工或者其近亲属自身原因超过工伤认定申请期限的，被耽误的时间不计算在工伤认定申请期限内」，所列情形为「（一）不可抗力；（二）人身自由受到限制；（三）属于用人单位原因；（四）社会保险行政部门登记制度不完善；（五）当事人对是否存在劳动关系申请仲裁、提起民事诉讼」. <https://www.court.gov.cn/fabu/xiangqing/6775.html>","r":"1 年要当真，别拖。但不是你自己的原因耽误的时间不算在 1 年里：不可抗力、人身自由受限、单位的原因、社保部门登记制度不完善、为确认劳动关系去申请仲裁或者打官司。所以单位拖着不报、拖到超期的，照样去申请，并把单位拖延的证据带上。社保部门不受理，或者认定结论你不服，可以申请行政复议，也可以直接起诉。单位说不算工伤，得由单位举证。但你自己也要留材料：出事当天的照片、同事联系方式、就诊记录、考勤。条例第十六条列了三种不认的情形：故意犯罪、醉酒或者吸毒、自残或者自杀。第十五条另有「视同工伤」：在工作时间和工作岗位突发疾病死亡，或者 48 小时之内经抢救无效死亡的。","g":"钱=0 时间=中 毅力=否 收益=大 口径=金钱","d":"work"},{"k":"23-14","s":23,"st":"23. 学什么技能划算","n":14,"t":"学完先合上书自己考一遍，别回头重读","p":"读完再读一遍感觉很熟，其实记不牢。合上书考自己一遍，效果明显更好，课堂上加了小测验，成绩提高属于中等幅度。给十种常用学法排名时，自测排在最高一档。读完一节先默写要点，再翻回去对。","c":"不花钱，总时间也不用增加。把原来用来重读的那段时间，改成合上书默写或者做题。难在自测当场就把没记住的暴露出来，感觉比重读难受。","b":"222 项独立研究、48478 名学生的荟萃分析：课堂测验让学生的学业成绩提高，效应量属于中等（g = 0.499）。效果大小受几个条件影响：对照组用的是什么学法、测验形式和最终考试是否一致、材料是否匹配、有没有给纠正性反馈、测验重复了几次、在哪里什么时候测、干预持续多久、用的是什么实验设计。另一份逐一评估十种常用学习方法的综述，把「练习性测验」和「分散练习」评为最高一档（high utility），理由是它们对不同年龄、不同能力的学习者都有效，在多种考核形式和真实教育场景里都被验证过。","e":"A","src":"Yang C, Luo L, Vadillo MA, Yu R, Shanks DR (2021). Testing (quizzing) boosts classroom learning: A systematic and meta-analytic review. Psychological Bulletin, 147(4), 399–435. <https://doi.org/10.1037/bul0000309>；Dunlosky J, Rawson KA, Marsh EJ, Nathan MJ, Willingham DT (2013). Improving Students' Learning With Effective Learning Techniques: Promising Directions From Cognitive and Educational Psychology. Psychological Science in the Public Interest, 14(1), 4–58. <https://doi.org/10.1177/1529100612453266>","r":"自测是为了逼着把东西从脑子里调出来，不为打分。做法：读完一节合上书先默写要点，再翻回去对。有纠正性反馈的效果更好，所以对完答案要看清错在哪。收益量级记「大」，是按效应量和评级判的。这两份证据量的是成绩，没有量小时数，所以没按节省时间的阈值套。自测和第 15 条（把同样的时间摊到几天）是同一份综述里评级最高的两样，配合用。","g":"钱=0 时间=少 毅力=些 收益=大 口径=时间","d":"work"},{"k":"11-6","s":11,"st":"11. 程序员和技术人容易踩的红线","n":6,"t":"离职时交清账号权限，不删库、不留后门、不改密码锁系统，哪怕公司欠你钱","p":"账号密码是公司给的，不等于离职后还能用，登进去就算非法控制，判 3 年以下。删数据让系统跑不起来的，判 5 年以下，后果特别严重的判 5 年以上。有个被辞退的高级工程师，用原管理员账号登录公司服务器删数据和日志，损失 12 万多元，判 3 年缓 5 年、罚 3 万元。","c":"不花钱。公司欠你工资，走劳动仲裁要回来，别自己动手（劳动仲裁见第 7 节）。难在气头上要忍住不去碰系统","b":"非法控制计算机信息系统，情节严重的判 3 年以下，并处或单处罚金，特别严重的判 3 到 7 年。删除、修改系统功能或者数据，造成系统不能正常运行，后果严重的判 5 年以下，特别严重的判 5 年以上。官方案例：IT 高级工程师吕某某被辞退后，用原管理员账号登录公司共享服务器。他改了密码，删了数据和日志，造成损失 12 万余元。判 3 年缓 5 年、罚 3 万元。软件公司员工白某某写升级程序时故意加进错误代码，导致客户系统无法登录，损失 4 万余元，以破坏计算机信息系统罪追诉（全国）","e":"A","src":"全国人大 (2020). 刑法（根据刑法修正案（十一）修正，第二百八十五条第二款、第二百八十六条）. <https://jtgl.beijing.gov.cn/jgj/jgxx/flfg/fl/11033925/index.html>；最高人民检察院 (2024). 检察机关「依法惩治网络犯罪 助力网络空间综合治理」典型案例（案例六）. <https://www.spp.gov.cn/xwfbh/wsfbh/202402/t20240223_644505.shtml>；最高人民检察院 (2025). 检察机关依法惩治侵害企业数据安全犯罪 服务保障企业创新发展（案例七）. <https://www.spp.gov.cn/xwfbh/wsfbh/202501/t20250124_680670.shtml>","r":"账号密码是公司给的，不等于离职后还能用。用原账号登录，就算「非法控制」。损失按数据恢复费用算，几万元就够立案。","g":"钱=0 时间=少 毅力=些 收益=大 口径=自由","d":"work"},{"k":"11-4","s":11,"st":"11. 程序员和技术人容易踩的红线","n":4,"t":"爬虫只爬无需登录的公开页面，不绕反爬、不碰个人信息，爬到的数据不卖","p":"要登录、要 token、要破解签名才拿得到的数据，属于绕过防护，判 3 年以下，严重的判 3 到 7 年。爬到个人信息更麻烦。行踪、通信、征信、财产类 50 条，就算情节严重。住宿、健康、交易类 500 条，其他类 5000 条，或者挣到 5000 元，也一样。","c":"不花钱。爬虫就是自动翻网页、把上面的数据抓下来的程序。爬之前先看一眼 robots 文件和接口授权说明，robots 是网站放在自己根目录、写明哪些页面不让抓的那份文件。要登录、要 token（一串临时通行凭证）、要破解签名才拿得到的数据，不爬。难在这些数据技术上一抓就到手，忍住全靠自觉","b":"绕过防护拿系统里的数据，量刑和第 3 条（抢票秒杀刷单脚本）一样，判 3 年以下，或者 3 到 7 年。非法获取、出售或者提供公民个人信息，达到下面任何一条就算「情节严重」：行踪轨迹、通信内容、征信、财产信息 50 条以上；住宿、通信记录、健康、交易信息 500 条以上；其他个人信息 5000 条以上；违法所得 5000 元以上。情节严重的判 3 年以下，并处或单处罚金，特别严重的判 3 到 7 年。官方案例：软件开发人员李某把窃取手机相册的功能伪装成「颜值检测」软件，拿到人脸照片 1751 张，还倒卖社工库资料，判 3 年缓 3 年。社工库就是把各处泄露的个人信息汇总起来的数据库。某网络科技公司用爬虫拿外卖平台的店铺、订单数据，造成损失 4 万余元，被以非法获取计算机信息系统数据罪追诉（全国）","e":"A","src":"全国人大 (2020). 刑法（根据刑法修正案（十一）修正，第二百八十五条第二款、第二百五十三条之一）. <https://jtgl.beijing.gov.cn/jgj/jgxx/flfg/fl/11033925/index.html>；最高人民法院、最高人民检察院 (2017). 关于办理侵犯公民个人信息刑事案件适用法律若干问题的解释（第三、四、五条）. <https://www.spp.gov.cn/xwfbh/wsfbt/201705/t20170509_190088.shtml>；最高人民检察院 (2022). 检察机关依法惩治侵犯公民个人信息犯罪典型案例（案例二）. <https://www.spp.gov.cn/spp/xwfbh/wsfbt/202212/t20221207_594915.shtml>；最高人民检察院 (2025). 检察机关依法惩治侵害企业数据安全犯罪 服务保障企业创新发展（案例一）. <https://www.spp.gov.cn/xwfbh/wsfbh/202501/t20250124_680670.shtml>","r":"2017 年那份司法解释规定，「未经本人同意，把合法收集来的信息给别人」也算「提供」。公司里把用户表导给外部合作方，同样落在这句里。5000 条只是一张小表的量。","g":"钱=0 时间=少 毅力=些 收益=大 口径=自由","d":"work"},{"k":"14-1","s":14,"st":"14. 账号与信息安全","n":1,"t":"邮箱、支付、社交账号都开二次验证，优先用手机弹窗确认，其次才是短信验证码","p":"二次验证是指登录时除了密码，还要再确认一次是不是本人。用手机上弹个窗、你点一下确认的办法，九成以上的钓鱼盗号都被拦住了。靠回答「上次在哪登的」「备用邮箱是什么」这种老办法，钓鱼盗号只能拦下一成左右。","c":"不花钱。每个账号设置一次，两三分钟就设完。","b":"谷歌统计了 35 万次真实的盗号尝试（也叫账号劫持）。一类是靠设备来验证，比如手机上弹窗让你点确认，或者插一把安全密钥。这一类拦下了「超过 94% 源于钓鱼的劫持尝试和 100% 的自动化劫持尝试」。钓鱼是指骗你在假网站上输密码，自动化是指机器拿泄露的密码批量去试。另一类是靠回答问题来验证，比如问你上次在哪登录、备用邮箱是什么。这一类「只拦下了低至 10% 的钓鱼劫持和 73% 的自动化劫持」","e":"A","src":"Doerfler P, Thomas K, Marincenko M, et al. (2019). Evaluating Login Challenges as a Defense Against Account Takeover. The World Wide Web Conference (WWW '19). <https://doi.org/10.1145/3308558.3313481>","r":"同一项研究也发现，这类验证有时会把本人挡在外面。52% 的真用户第一次没登进去，不过最后有 97% 还是进去了。先给邮箱开这个功能，因为别的账号大多能用邮箱找回密码。验证码只自己用，替别人报码、刷脸会背上什么，见第 8 节第 45 条（念验证码）","g":"钱=0 时间=少 毅力=否 收益=大 口径=金钱","d":"work"},{"k":"26-6","s":26,"st":"26. 做一个网站或平台：资质、备案和服务器","n":6,"t":"用户发的内容你要管：审核机制、举报入口、发现违法立即停传并报告","p":"用户发的东西，出了事由平台负责。你要把这套制度建起来：注册、发帖审核、评论审核、每天巡查、出事怎么处置。页面显眼的地方放举报入口。看到违法信息，马上停止传播、留好记录、报给主管部门。不做的，罚 5 万到 50 万元，严重的更多。","c":"要花钱雇人审核，这是平台最大的一笔长期开支。举报入口和每一次处置的记录都要留痕。难在它天天都得有人盯，停一天就可能出事","b":"法规说平台「应当履行信息内容管理主体责任」，用户发的东西由平台自己负责管。具体要「健全用户注册、账号管理、信息发布审核、跟帖评论审核、版面页面生态管理、实时巡查、应急处置和网络谣言、黑色产业链信息处置等制度」。从注册、发帖、评论，到日常巡查和出事处置，每一环都要有写下来的规矩。还「应当在显著位置设置便捷的投诉举报入口」，举报按钮要放在用户一眼看得见、点得到的地方。发现违法信息的，「应当依法立即采取处置措施，保存有关记录，并向有关主管部门报告」。网络安全法说得更具体。原话是「发现法律、行政法规禁止发布或者传输的信息的，应当立即停止传输该信息，采取消除等处置措施，防止信息扩散，保存有关记录，并向有关主管部门报告」。没做到的，责令改正、给予警告、予以通报，可以再罚 5 万到 50 万元。拒不改正、或者情节严重的，罚 50 万到 200 万元，还可能被责令停业整顿、关闭网站或者应用程序、吊销许可证或者营业执照。直接负责的人另外罚 5 万到 20 万元（全国）","e":"A","src":"国家互联网信息办公室 (2019). 网络信息内容生态治理规定（网信办令第 5 号，第八、九、十、十六、三十七条）. <http://www.cac.gov.cn/2019-12/20/c_1578375159509309.htm> ; 全国人大常委会 (2025). 网络安全法（2025 年修正，2026 年 1 月 1 日施行，第四十九、六十九条）. <https://www.cac.gov.cn/2025-12/29/c_1768735112911946.htm> ; 国务院 (2000). 互联网信息服务管理办法（第十五、十六、二十三条）. <https://www.gov.cn/gongbao/content/2011/content_1860864.htm>","r":"审核规则不用自己想，照抄就行。哪九类内容不许发，互联网信息服务管理办法第十五条列得清清楚楚。做直播的还多三件事：要「建立直播内容审核平台」，要能随时掐断一场正在播的直播，法条管这个叫「即时阻断」，还要把直播内容和日志保存 60 日。网络表演的视频资料同样不少于 60 日","g":"钱=少 时间=多 毅力=是 收益=大 口径=自由","d":"work"},{"k":"19-4","s":19,"st":"19. 在职、离职和工伤","n":4,"t":"被裁先算清 N：每满一年一个月工资，不满六个月按半个月","p":"被裁时公司要给的经济补偿这样算：干满一年给一个月工资，满半年不满一年按一年算，不满半年给半个月。这里的月工资是走人前 12 个月的平均数，奖金、津贴、补贴都要算进去。工资高过当地上年度月平均工资 3 倍的按 3 倍封顶，年限最多算 12 年。","c":"不花钱。拿计算器算一次，十分钟。","b":"劳动合同法定的经济补偿，就是被裁时单位该给的那笔钱，大家常叫它 N。算法是：「每满一年支付一个月工资……六个月以上不满一年的，按一年计算；不满六个月的，向劳动者支付半个月工资」。月工资高过当地上年度职工月平均工资三倍的，按三倍封顶算，而且工龄最多只算到十二年","e":"A","src":"全国人大常委会 (2007). 中华人民共和国劳动合同法（2008 年 1 月 1 日施行）（第四十七条）. <http://www.gov.cn/gongbao/content/2007/content_711013.htm>","r":"月工资指劳动合同解除前十二个月的平均工资。奖金、津贴和补贴都要算进去，不是只算基本工资。这一点最容易被公司做低。这笔钱要不要交个税，见本节第 18 条（补偿的个税）","g":"钱=0 时间=少 毅力=否 收益=大 口径=金钱","d":"work"},{"k":"20-1","s":20,"st":"20. 刚出生的孩子怎么带","n":1,"t":"让孩子仰着睡，睡硬的平面，同房不同床，床上不放任何软东西","p":"让孩子脸朝上躺着睡，睡在硬的平面上。大人和孩子睡同一间房，但不睡同一张床。床上不放枕头、被子、床围、毛绒玩具和定型枕。斜着的摇篮和婴儿椅只能坐，不能当床睡。光美国每年就有约 3500 个婴儿死在睡眠里。","c":"不花钱。床垫要换成硬的，几百元。难在要顶住长辈的说法，一直按这个来","b":"美国每年约 3500 名婴儿死于睡眠相关原因。这里面包括婴儿猝死综合征、死因不明和在床上意外憋住。美国儿科学会给的安全睡眠环境是「仰卧位；使用坚实、不倾斜的睡眠表面；同房不同床；避免柔软的寝具和过热」。还有几件事也能降低风险：母乳喂养、别让孩子接触尼古丁和酒精、按时接种疫苗、使用安抚奶嘴","e":"A","src":"Moon RY, Carlin RF, Hand I, Task Force on Sudden Infant Death Syndrome and the Committee on Fetus and Newborn (2022). Sleep-Related Infant Deaths: Updated 2022 Recommendations for Reducing Infant Deaths in the Sleep Environment. Pediatrics, 150(1), e2022057990. <https://doi.org/10.1542/peds.2022-057990>","r":"「床上不放任何软东西」是指枕头、被子、床围、毛绒玩具、定型枕全都不放。看起来很安全的哺乳枕也不放。斜着的摇篮和婴儿椅不能当睡觉的地方。这一节里，这件事的差别最大，也最需要顶住长辈的压力","g":"钱=0 时间=少 毅力=是 收益=大 口径=死亡率","d":"parent"},{"k":"30-4","s":30,"st":"30. 上学以后的孩子","n":4,"t":"让孩子每天在户外待够 2 小时，这是目前唯一有随机试验支持的防近视办法","p":"小学一年级每天多上 40 分钟户外课，三年后新近视的孩子从约四成降到约三成。卫健委给的量是每天白天在户外不少于 2 小时，或者一周加起来 14 小时。阴天也算数，课间到室外站着也算数。","c":"不花钱。但每天要腾出时间，多半得从写作业和上网课的时间里挤。难在天天都要做到，不是做几次就完。","b":"广州 12 所小学的一年级学生，以学校为单位抽签分组（干预校 952 人，对照校 951 人，平均年龄 6.6 岁）。干预的做法是每个上学日增加 1 节 40 分钟户外活动课，并鼓励家长在课外多带孩子出去。3 年里新近视的比例，干预组 30.4%，是 853 名合格者中的 259 例；对照组 39.5%，是 726 名中的 287 例。两组差值 -9.1 个百分点（95% CI -14.1 至 -4.1，P<0.001），真实差距大致在少 4 到少 14 个百分点之间。3 年里度数的加深量（等效球镜变化）是 -1.42 D 对 -1.59 D，差 0.17 D（P=0.04）。干预组加深得略少一点。D 是量度数的单位。眼轴（眼球前后的长度）的增长，两组看不出差别（P=0.07）。《防控儿童青少年近视核心知识十条》要求儿童青少年每天日间户外活动不少于 2 小时，或每周累计 14 小时。它注明即使阴天，户外活动也有防护效果，并要求避开午后高温强晒的时段","e":"A","src":"He M, et al. (2015). Effect of Time Spent Outdoors at School on the Development of Myopia Among Children in China: A Randomized Clinical Trial. JAMA. <https://doi.org/10.1001/jama.2015.10803>；国家卫生健康委办公厅 (2023). 防控儿童青少年近视核心知识十条（国卫办妇幼函〔2023〕278 号）. <https://www.gov.cn/zhengce/zhengceku/202307/content_6894284.htm>","r":"这项试验只做了 3 年，参加的孩子也都是从 6 岁开始的。两组近视的比例差 9.1 个百分点，只能让一部分人不近视，保证不了不近视。同一份核心知识十条还给了几条做法。读写要「一尺一拳一寸」。近距离用眼 20 分钟后，要远眺 20 秒以上。中小学生不为学习而用电子屏幕的，一次不超过 15 分钟，一天加起来不超过 1 小时。「待在户外」和「上体育课」不是一回事，课间到室外站着也算数。","g":"钱=0 时间=中 毅力=些 收益=大 口径=死亡率","d":"parent"},{"k":"18-3","s":18,"st":"18. 养孩子划不划算","n":3,"t":"知道这条：不得因怀孕、生育、哺乳降工资或者辞退","p":"怀孕、生孩子、喂奶这几段时间里，单位给你降工资或者把你辞了，都是违法的，要按每人 1000 到 5000 元罚款。孩子不满一周岁的，你每天有 1 小时喂奶时间，单位也不能安排你加班和上夜班。索赔怎么走见第 19 节。","c":"不花钱","b":"国务院规定：「用人单位不得因女职工怀孕、生育、哺乳降低其工资、予以辞退、与其解除劳动或者聘用合同。」这三段时间里单位不能给你减钱，也不能把你辞退或者解约。哺乳未满 1 周岁婴儿的，每天有 1 小时哺乳时间。单位也不得安排你延长劳动时间，不得安排夜班。单位违反上面这些的，按每人 1000 元以上 5000 元以下罚款","e":"A","src":"国务院 (2012). 女职工劳动保护特别规定（国令第 619 号，第五条、第九条、第十三条）. <https://www.gov.cn/zhengce/zhengceku/2012-05/07/content_6584.htm>","r":"真的被违法辞退了，索赔路径见第 19 节。取证的重点是调岗、降薪的书面通知和聊天记录，这两样要留好","g":"钱=0 时间=少 毅力=否 收益=大 口径=金钱","d":"parent"},{"k":"17-2","s":17,"st":"17. 家里有老人","n":2,"t":"把遗嘱立了，记住后立的推翻先立的，公证遗嘱不再优先","p":"法律认六种遗嘱，但形式写错了整份作废，这是最常见的翻车点。自己手写的那种，要本人从头到尾手写，签上名，写清年月日。立了好几份、内容互相打架的，按最后立的那份算。2021 年起，公证过的那份也不再自动排在前面。","c":"自己手写一份遗嘱，不花钱。找公证处公证，几百到上千元。难在开口：要和家里人谈身后事","b":"民法典认可六种遗嘱形式：自己手写的、请人代写的、打印的、录音录像的、口头的、公证的。每一种都有各自必须做到的手续要求（法律叫「形式要件」）。如果立了好几份，内容互相打架，以最后立的那份为准。2021 年起，公证的那份不再自动排在前面","e":"A","src":"全国人大 (2020). 民法典（第一千一百三十四条至第一千一百四十二条）. <https://www.spp.gov.cn/spp/fl/202006/t20200602_463888.shtml>","r":"自己手写的遗嘱，要本人从头到尾手写，签上名，写清年月日。打印的遗嘱要有两个以上见证人。遗嘱人和见证人要在每一页上签名，并写清年月日。继承人、被写进遗嘱要分东西的人，以及他们的近亲属，都不能当见证人。形式错了整份作废，这是最常见的翻车点","g":"钱=0 时间=少 毅力=些 收益=大 口径=金钱","d":"parent"},{"k":"20-8","s":20,"st":"20. 刚出生的孩子怎么带","n":8,"t":"不满 3 个月的婴儿体温到 38 ℃ 就直接去医院，不在家观察","p":"孩子不满 3 个月，体温到 38 ℃ 就直接去医院。不要在家观察，也不要先喂退烧药再等等看。这个月龄的孩子就算得的是严重细菌感染，也可能只表现为发热。所以「看着精神还行」不能当成在家等的理由。出生不满 8 天的孩子，连指南都没覆盖，更要马上去。","c":"挂号加检查几百元","b":"美国儿科学会为 8 至 60 日龄、看上去状态还可以的足月婴儿制定了专门指南。这份指南把发热定义为「体温 ≥38.0 ℃」。它按 8 至 21 日龄、22 至 28 日龄、29 至 60 日龄分成三档，各给一条处理路径。不满 8 日龄的婴儿甚至不在这份指南的范围里，意思是这个阶段更要立即就医","e":"A","src":"Pantell RH, Roberts KB, Adams WG, et al. (2021). Evaluation and Management of Well-Appearing Febrile Infants 8 to 60 Days Old. Pediatrics, 148(2), e2021052228. <https://doi.org/10.1542/peds.2021-052228>","r":"这个月龄的孩子，得了严重细菌感染也可能只表现为发热。所以看着「精神还行」，不能作为在家观察的理由。也别自己先喂退烧药，再等等看","g":"钱=少 时间=少 毅力=否 收益=大 口径=死亡率","d":"parent"},{"k":"27-1","s":27,"st":"27. 怀孕和生产：从发现怀孕到出院办证","n":1,"t":"准备怀孕就开始每天补 0.4 毫克叶酸，一直吃到孕早期满 3 个月","p":"怀孕前后每天吃一粒叶酸，孩子出现神经管缺陷的概率大约能降七成。神经管缺陷就是无脑儿、脊柱裂这一类的出生缺陷。已经生过一个这样的孩子的人，再生一个还出问题的概率，大约降到原来的三分之一。","c":"几十元一瓶。农村妇女不用花钱，国家的免费增补叶酸项目会发。每天吃一粒，难在天天记得住","b":"Cochrane 系统综述把 5 项试验、6708 例分娩合起来一起算，证据质量评为高。怀孕前后每天补叶酸，胎儿神经管缺陷的风险 RR 0.31（95% CI 0.17 至 0.58，可信范围），约降低七成。已经生过神经管缺陷孩子的人，再生一个又出问题的风险 RR 0.34（95% CI 0.18 至 0.64），降到原来的三分之一左右。按人群分组来看，0.4 毫克和更高的剂量效果没有差别。单独吃叶酸和吃复合维生素，效果也没有差别","e":"A","src":"De-Regil LM, Peña-Rosas JP, Fernández-Gaxiola AC, Rayco-Solon P (2015). Effects and safety of periconceptional oral folate supplementation for preventing birth defects. Cochrane Database of Systematic Reviews, (12), CD007950. <https://doi.org/10.1002/14651858.CD007950.pub3>","r":"关键是「怀孕前就开始吃」。胎儿的神经管在受孕后 28 天内就长合了。等你测出怀孕再吃，这段时间已经过去大半。所以打算要孩子，就提前 3 个月开始吃。同一篇汇总研究里，叶酸对唇腭裂、先天性心脏病、流产都没有明确效果，别指望它治别的","g":"钱=0 时间=少 毅力=些 收益=大 口径=死亡率","d":"parent"},{"k":"30-3","s":30,"st":"30. 上学以后的孩子","n":3,"t":"孩子被欺凌，当天就报到学校并要求书面处理，涉及打人、抢钱、传谣的直接报警","p":"被同伴欺凌的孩子，冒出自杀念头的可能约是没被欺凌的 2.2 倍，有过自杀行为的约 2.6 倍。学校接到报告要立即调查，认定是欺凌就要处分，严重的不许瞒，必须报公安。所以当天就报，要求走认定程序，留下书面记录。","c":"不花钱。找班主任，也找学校的学生欺凌治理组织。要报警就打 110。难在要顶住「别把事闹大」这类劝法。","b":"34 项研究、284,375 名儿童青少年合起来算。被同伴欺凌和冒出自杀念头相关，OR 2.23（95% CI 2.10–2.37），出现念头的机会约为没被欺凌的 2.2 倍。另有 9 项研究、70,102 人，被欺凌和自杀未遂相关，OR 2.55（1.95–3.34），约 2.6 倍。男女、年龄和研究本身质量不同，结果都一样。网络欺凌和自杀念头的关联比线下欺凌更强。《未成年人学校保护规定》第二十一条列出五类行为：殴打、脚踢、掌掴、抓咬、推撞、拉扯；辱骂、讥讽、起侮辱性绰号；抢夺、强拿硬要或故意毁坏财物；恶意排斥孤立；通过网络捏造事实诽谤或散布谣言。该条还规定，在年龄、身体或人数上占优势的一方蓄意或恶意做这些事，造成人身伤害、财产损失或精神损害的，可以认定为欺凌。第二十二条要求教职工发现学生情绪反常、身体损伤，应及时了解并报告。第二十三条要求学校接到报告立即调查，提交欺凌治理组织认定处置，并通知家长参与。认定构成欺凌的，要作出教育惩戒或纪律处分。对违反治安管理或涉嫌犯罪的严重欺凌行为不得隐瞒，应当及时向公安机关、教育行政部门报告（全国，2021 年 9 月 1 日起施行）","e":"A","src":"van Geel M, et al. (2014). Relationship between peer victimization, cyberbullying, and suicide in children and adolescents: a meta-analysis. JAMA Pediatrics. <https://doi.org/10.1001/jamapediatrics.2013.4143>；教育部 (2021). 未成年人学校保护规定（教育部令第 50 号，第二十一、二十二、二十三条）. <https://www.gov.cn/zhengce/zhengceku/2021-06/02/content_5614946.htm>","r":"孩子身上出现说不清来由的伤，突然不肯上学，东西反复丢失，先按第二十二条那几个信号去问。这份把多项研究合起来算的分析只是跟踪记录、没有分组对照，所以不能证明单是欺凌就导致自杀，但风险的方向和大小是清楚的。《加强中小学生欺凌综合治理方案》另外要求严格区分欺凌与学生之间的打闹嬉戏。所以学校有义务作出认定，不能一句「小孩子闹着玩」了事。","g":"钱=0 时间=少 毅力=些 收益=大 口径=死亡率","d":"parent"},{"k":"17-5","s":17,"st":"17. 家里有老人","n":5,"t":"凡是让老人先交钱的「投资养老」都别碰：办卡、买床位、买养老公寓、旅居养老、买老年产品是同一套非法集资","p":"让老人先交钱、又许诺回报的养老名目，都是同一套骗局：办卡、买床位、买养老公寓、旅居养老、开会卖老年产品。按规定，这种钱亏了只能自己认。有人借预定养老公寓床位收走 1.36 亿元，坑了 2100 多人。能拦住的只有掏钱那一步。","c":"不花钱。把下面这几种名目念给老人听一遍，几分钟。以后遇上就直接拒绝：不去听课，不去参观，不留电话。难在老人要是已经去过几次、和人处熟了，就不容易劝回来","b":"民政部列了五种表现形式，认名目比认人可靠。第一种，假借养老服务机构之名：没有实体，临时租个场地，宣称和养老机构签了合作协议来「碰瓷」。第二种，以提供「养老服务」为名：卖「贵宾卡」「会员卡」「预付卡」，让人预交「养老服务费用」，承诺的服务明显超过自己的床位供给能力。第三种，以投资「养老项目」为名。常见名目有入股养生养老基地、销售虚构的养老公寓。还有长期出租养老床位、「时间银行」互助养老。打的幌子是返本销售、售后返租、约定回购。第四种，以销售「老年产品」为名：商品回购、寄存代售、消费返利、免费体检、赠送礼品、会议营销、养生讲座、专家义诊。第五种，以享受「旅居养老」为名：低价或免费旅游、储值返利、积分养老。钱追不回来，条例里写明了。防范和处置非法集资条例第二十五条规定，「因参与非法集资受到的损失，由集资参与人自行承担」，亏掉的钱只能自己认。官方通报过的案子里，戴某平等人以预定养老公寓床位名义非法集资 1.36 亿元，被害人 2100 余人，戴某平以集资诈骗罪判 15 年，并处罚金 40 万元。曹某铭以投资养老产业为名集资诈骗 132.07 亿元，涉及 11 万余人，判无期徒刑、剥夺政治权利终身、没收个人全部财产。保健品会销走的是诈骗罪。倪某荣用免费宴请、赠送礼品、专车接送，把老年人拉去听课。讲师用「虚假人设、虚假案例、虚高砍价」编造防癌抗癌功效。老人被诱骗以成本价的数十倍买「二氢槲皮素」。销售金额 62 万余元。倪某荣判 10 年 3 个月，并处罚金 12 万元（全国，条例 2021 年 5 月 1 日起施行）","e":"A","src":"民政部 (2023). 关于养老服务领域非法集资的风险提示. <https://www.gov.cn/lianbo/bumen/202306/content_6886556.htm>（中国政府网发布）；民政部、中国银保监会 (2021). 关于养老领域非法集资的风险提示. <https://www.mca.gov.cn/n152/n164/c36171/content.html>；国务院 (2021). 防范和处置非法集资条例（国务院令第 737 号，第二、二十五、三十条）. <https://www.gov.cn/zhengce/zhengceku/2021-02/10/content_5586632.htm>；最高人民检察院 (2022). 检察机关打击整治养老诈骗犯罪典型案例. <https://www.spp.gov.cn/xwfbh/wsfbt/202206/t20220617_560010.shtml>；最高人民法院 (2025). 依法惩治涉民生领域诈骗犯罪典型案例（案例五 倪某荣诈骗案）. <https://www.court.gov.cn/zixun/xiangqing/482861.html>","r":"判断不靠「这家看着正规」，靠「有没有让你先交钱、有没有承诺回报」。养老机构本来是卖服务的，话里一带上投资、返利、回本，就别信。老人被拉去听课、旅游、义诊，本身不违法，也很难拦住。能拦的是掏钱那一步，配合第 3 条的双人确认规矩用。已经交了钱，就立刻按第 8 节第 2 条打 110 或 96110 要求止付，同时向当地负责处置非法集资的牵头部门举报。以房养老是另一套路径，见第 6 条（住房反向抵押养老保险）。","g":"钱=0 时间=少 毅力=些 收益=大 口径=金钱","d":"parent"},{"k":"10-11","s":10,"st":"10. 恋爱和结婚划不划算","n":11,"t":"父母出资买房，在转账的时候就把是借是送写清楚","p":"婚前父母出钱买房，默认只给自己孩子。婚后出的钱没约定，按夫妻共同财产算。2025 年 2 月起，婚后一方父母全额出资、又没写明只给自己孩子的，离婚时法院可以把房判给出资方的孩子，再定补不补偿另一方。要算借款，就当天写清楚、双方签字。","c":"不花钱。出资当天写一页说明，写明这笔钱是赠与谁、还是借给谁，出资的父母和子女都签字。如果写的是借款，就让夫妻两个人都签，转账备注也写同一句话。","b":"婚前父母为双方购房出资的，认定为对自己子女个人的赠与。父母明确表示赠与双方的除外。婚后出资的，有约定按约定。没有约定或者约定不明确的，按夫妻共同财产的原则处理。2025 年 2 月 1 日起还有一条。婚内由一方父母全额出资、赠与合同又没写明只赠与自己子女的，离婚分割时，法院可以判房屋归出资人子女一方所有。判归之后再综合几项情况，确定要不要给另一方补偿、补多少。这几项是共同生活和生育共同子女的情况、离婚过错、对家庭的贡献大小、离婚时房屋市场价格。一方父母部分出资，或者双方父母都出资的，以出资来源和比例为基础判归其中一方，并合理补偿（全国）","e":"A","src":"最高人民法院 (2020). 关于适用《民法典》婚姻家庭编的解释（一）（法释〔2020〕22 号，第二十九条）. <https://www.court.gov.cn/fabu/xiangqing/282071.html>；最高人民法院 (2025). 关于适用《民法典》婚姻家庭编的解释（二）（法释〔2025〕1 号，第八条）. <https://www.court.gov.cn/zixun/xiangqing/452771.html>；全国人大 (2020). 民法典（第一千零六十二条第一款第四项）. <https://www.spp.gov.cn/spp/fl/202006/t20200602_463888.shtml>","r":"写清楚对两边都有用。出钱的父母不必再指望离婚时补一张借条来保住出资。解释（二）施行后，钱是谁出的本身就是分房子的依据，房本写谁的名字不再决定归属。接受出资的一方，也不用等到离婚才知道这笔钱算什么。要按借款办就真按借款办：双方说好是借，约定怎么还，转账写明，必要时留下还款记录。缺一样，上了法庭都要解释","g":"钱=0 时间=少 毅力=否 收益=大 口径=金钱","d":"rel"},{"k":"8-24","s":8,"st":"8. 别把自己搭进去：法律与财产安全","n":24,"t":"彩礼走转账并备注，聊天记录留好；借婚姻要钱可以要回","p":"借婚姻索取财物是法律禁止的，法院支持返还。没登记的、登记了但确实没共同生活的、婚前给了彩礼导致给钱一方生活困难的，可以要求返还。已登记又共同生活的一般不返还。所以彩礼、三金、改口费都走转账并备注用途，谁给的钱谁留证据，男女一样。","c":"不花钱。彩礼、三金、改口费都走转账，并在备注里写清用途。口头说好的事，用聊天记录留痕，或者让家人在场确认。","b":"法律禁止借婚姻索取财物。一方以彩礼为名借婚姻索取财物的，另一方要求返还，法院支持。有三种情形可以要求返还：没办结婚登记；办了登记但确实没有共同生活；婚前给了彩礼，给到出钱那一方生活困难。已经登记并且共同生活的，一般不返还。但共同生活的时间短、彩礼数额又过高的，法院会按钱实际怎么花的、有没有嫁妆、有没有孕育、双方有没有过错，来确定返还的比例。没登记但已经同居的，同样按比例处理（全国，2024 年 2 月起）","e":"A","src":"全国人大 (2020). 民法典（第一千零四十二条）. <https://www.spp.gov.cn/spp/fl/202006/t20200602_463888.shtml>；最高人民法院 (2024). 关于审理涉彩礼纠纷案件适用法律若干问题的规定（法释〔2024〕1 号，第二、五、六条）. <https://www.court.gov.cn/fabu/xiangqing/423442.html>；最高人民法院 (2020). 关于适用《民法典》婚姻家庭编的解释（一）（法释〔2020〕22 号，第五条）. <https://www.court.gov.cn/fabu/xiangqing/282071.html>","r":"彩礼算不算「数额过高」，要看给钱一方所在地的人均可支配收入和他家的情况，全国没有统一数字。该退多少，由法官一个案子一个案子地定。给钱的一方和收钱的一方规则一样，谁给的钱谁留证据。","g":"钱=0 时间=少 毅力=否 收益=大 口径=金钱","d":"rel"},{"k":"10-18","s":10,"st":"10. 恋爱和结婚划不划算","n":18,"t":"同性伴侣趁两个人都清醒，办好授权委托、意定监护和遗嘱：法律上你们不是近亲属，不办就没有签字权和继承权","p":"法律上的近亲属是配偶、父母、子女、兄弟姐妹这些人，伴侣不算。不提前办文件，一方病重时，另一方替他做不了主。一方去世时，另一方一分遗产也继承不到。三份文件各管一段：活着时靠授权委托，失去判断能力后靠意定监护，身后靠遗嘱。","c":"意定监护和遗嘱去公证处办，公证费各地不同，几百元起。自己手写遗嘱不花钱。前后要花一两个半天。难在两个人要坐下来谈生病和死。","b":"民法典第一千零四十五条列的近亲属是配偶、父母、子女、兄弟姐妹、祖父母、外祖父母、孙子女、外孙子女。第一千一百二十七条的法定继承人先是配偶、子女、父母，其次是兄弟姐妹、祖父母、外祖父母。伴侣两处都不在。第一千二百一十九条管的是手术、特殊检查、特殊治疗。不能或者不宜向患者说明的，医务人员要向患者的「近亲属」说明，并取得同意。有三条路可以补上。第一，第三十三条允许成年人和「其他愿意担任监护人的个人」事先书面约定监护人。本人丧失或者部分丧失民事行为能力后，这个人来当监护人，监护人就是法定代理人。第二，第一百六十五条规定，书面授权委托书要写明代理人的姓名、代理事项、权限和期限，由本人签名或者盖章。本人一去世，委托就终止。第三，第一千一百三十三条允许立遗嘱，把个人财产赠给法定继承人以外的个人。湖北省司法厅网站刊登的宜昌市司法局文章写明，同性伴侣可以办意定监护协议公证，指定对方当自己将来的监护人（全国）","e":"A","src":"全国人大 (2020). 民法典（第二十三、三十三、一百六十五、一百七十三、一千零四十五、一千一百二十四、一千一百二十七、一千一百三十三至一千一百四十、一千一百四十二、一千二百一十九条）. <https://flk.npc.gov.cn/detail?id=ff808081729d1efe01729d50b5c500bf>（国家法律法规数据库）；宜昌市司法局 (2021). 意定监护公证：通向彩虹的公证之路. 湖北省司法厅网站「实践荟萃」栏目. <https://sft.hubei.gov.cn/fbjd/sjhc/202101/t20210108_3208602.shtml>","r":"伴侣拿遗产的身份是「受遗赠人」，不是继承人。知道有这份遗赠后，60 天内要明确表示接受，不表示就算放弃。伴侣本人和跟他有利害关系的人，不能当遗嘱见证人。立了几份遗嘱，以最后一份为准，见第 17 节第 2 条（遗嘱后立的推翻先立的）。意定监护人能不能直接签手术同意书，各医院做法不一，提前问一下常去的医院。家属不认这些文件，就要打官司：一审普通程序 6 个月起，律师费自己出。所以文件尽量去公证处办。一起买的房子、一起存的钱，按真实出资另外写书面约定。意定监护怎么办，见第 17 节第 1 条（书面指定将来的监护人）。受益人是你自己和伴侣。","g":"钱=少 时间=中 毅力=些 收益=大 口径=自由","d":"rel"},{"k":"32-1","s":32,"st":"32. 出国留学：身份、打工、保险和回国认证","n":1,"t":"交学费之前先查学校在不在留服中心的认证院校名单里","p":"回国以后，这张文凭要用来考公、进国企、落户、评职称，就得先过一道认证。认证由教育部留学服务中心做。学校不在能认证的名单里，学费和时间就白花了，文凭在国内用不上。查名单不花钱，查完再交学费。","c":"不花钱。在留服中心的「认证院校查询」里输一次学校名，几分钟就查完","b":"中国（教育部）留学服务中心有一个认证院校查询入口。你可以按国家查，也可以按学校名字查。查的是这所学校发的学历学位在不在认证范围里。另外，教育部教育涉外监管信息网还公布中外合作办学和境外办学的监管信息","e":"A","src":"中国（教育部）留学服务中心. 认证院校查询. <http://yxcx.cscse.edu.cn/>；教育部教育涉外监管信息网. <https://jsj.moe.gov.cn/>","r":"中介嘴上说「教育部认可」不算数，以你自己上网查到的结果为准。名单会变，入学时在名单里，毕业时不一定还在，所以读书期间每年复查一次。中外合作办学的项目另有一套认证注册的制度。2008 年以后入学的，可以凭姓名和身份证号，在涉外监管信息网查自己的注册序号。","g":"钱=0 时间=少 毅力=否 收益=大 口径=金钱","d":"rel"},{"k":"33-2","s":33,"st":"33. 残疾之后怎么活","n":2,"t":"致残之后的头十年是自杀的高风险期，别当成「想开点」就行的事","p":"刚残疾那几年，自己或者家人情绪垮掉，是常见的，不是意志力的问题。英国两家脊髓损伤中心的长期随访发现，这群人的自杀率是普通人的五倍。九成以上的自杀发生在受伤后的头十年。受伤原因本身就是自杀的人，风险还要高出一截。","c":"不花钱。打一个电话，或者挂一次号。","b":"研究跟踪了 1991 到 2010 年新入院、熬过伤后第一年、出院时有神经功能缺损的 2304 例外伤性脊髓损伤患者，随访到 2014 年底。其中 63 例（2.7%）的受伤原因本身就是自杀未遂。到随访结束共 533 人死亡，其中 4.2% 死于自杀，91% 的自杀发生在受伤后的头十年。按年龄标化的自杀死亡率是每年每 10 万人 62.5 例（95% CI 36.4–88.6，可信范围），是 2014 年英格兰和威尔士普通人群自杀率（每 10 万人 12.2 例）的五倍。因自杀未遂致伤的那部分人，和其他致伤原因相比，死亡的比值比是 4.32（P<0.001），自杀的比值比是 9.46（P<0.001）","e":"A","src":"Savic G, DeVivo MJ, Frankel HL, Jamous MA, Soni BM, Charlifue S (2018). Suicide and traumatic spinal cord injury - a cohort study. Spinal Cord, 56(1):2-6. <https://doi.org/10.1038/sc.2017.98>","r":"这项研究只看了脊髓损伤，套到失明、截肢、烧伤这些别的致残原因上属于往外推。它能说明的是时间窗：风险不是出院就过去了，要盯十年。要人陪着说话打 12356，见第 29 节第 11 条（12356）。家里别囤安眠药和农药，见第 1 节第 25 条（自杀念头）。哀伤和情绪卡住半年还在原地，去精神科或临床心理科挂号，见第 29 节第 8 条（哀伤过了半年）。","g":"钱=0 时间=少 毅力=些 收益=大 口径=死亡率","d":"rel"}],"secs":[{"s":1,"t":"1. 不要早死","d":"safety","n":41},{"s":2,"t":"2. 不要慢慢死","d":"health","n":42},{"s":3,"t":"3. 不要浪费精力","d":"mind","n":24},{"s":4,"t":"4. 不要浪费时间","d":"mind","n":18},{"s":5,"t":"5. 不要浪费钱","d":"money","n":44},{"s":6,"t":"6. 反面清单","d":"health","n":28},{"s":7,"t":"7. 没钱的时候怎么活","d":"money","n":22},{"s":8,"t":"8. 别把自己搭进去：法律与财产安全","d":"law","n":45},{"s":9,"t":"9. 普通人容易踩的法律红线","d":"law","n":25},{"s":10,"t":"10. 恋爱和结婚划不划算","d":"rel","n":20},{"s":11,"t":"11. 程序员和技术人容易踩的红线","d":"work","n":17},{"s":12,"t":"12. 创业与做生意：别把家底赔进去","d":"law","n":24},{"s":13,"t":"13. 紧急情况：先做什么","d":"safety","n":44},{"s":14,"t":"14. 账号与信息安全","d":"work","n":9},{"s":15,"t":"15. 租房与买房","d":"money","n":9},{"s":16,"t":"16. 得了慢性病之后怎么活","d":"health","n":9},{"s":17,"t":"17. 家里有老人","d":"parent","n":9},{"s":18,"t":"18. 养孩子划不划算","d":"parent","n":6},{"s":19,"t":"19. 在职、离职和工伤","d":"work","n":18},{"s":20,"t":"20. 刚出生的孩子怎么带","d":"parent","n":13},{"s":21,"t":"21. 出国、旅行与境外安全","d":"safety","n":11},{"s":22,"t":"22. 怎么放松：娱乐场所和减压","d":"mind","n":10},{"s":23,"t":"23. 学什么技能划算","d":"work","n":23},{"s":24,"t":"24. 看病：怎么少花钱少走弯路","d":"health","n":11},{"s":25,"t":"25. 人走了以后要办什么","d":"law","n":10},{"s":26,"t":"26. 做一个网站或平台：资质、备案和服务器","d":"work","n":11},{"s":27,"t":"27. 怀孕和生产：从发现怀孕到出院办证","d":"parent","n":16},{"s":28,"t":"28. 别为了外形把身体搞坏","d":"health","n":8},{"s":29,"t":"29. 遭遇重大打击之后","d":"mind","n":13},{"s":30,"t":"30. 上学以后的孩子","d":"parent","n":17},{"s":31,"t":"31. 十八岁之后有哪几条路","d":"parent","n":16},{"s":32,"t":"32. 出国留学：身份、打工、保险和回国认证","d":"rel","n":10},{"s":33,"t":"33. 残疾之后怎么活","d":"rel","n":20},{"s":34,"t":"34. 家里的常备药别吃出事","d":"health","n":11}],"total_items":654,"total_secs":34};
+
+/* ---- 领域 ---- */
+const DOM = Object.fromEntries(DB.domains.map(d => [d[0], d[1]]));
+const dcolor = k => getComputedStyle(document.documentElement).getPropertyValue('--d-' + k).trim() || '#888';
+
+/* ---- 确定性 PRNG：mulberry32，种子由字符串派生 ---- */
+function fnv1a(str){
+  let h = 2166136261 >>> 0;
+  for (let i = 0; i < str.length; i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+function mulberry32(a){
+  return function(){
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+function todayStr(){
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+/* 每天固定十条：先把 61 条池按 8 个生活领域分组，各组洗牌，再按领域轮转取满 10 条
+   ——保证一天里看到的是八个领域，而不是十条同领域；同一种子必得同一批。 */
+function pickTen(seedStr){
+  const rnd = mulberry32(fnv1a(seedStr));
+  const groups = {};
+  DB.items.forEach(it => (groups[it.d] = groups[it.d] || []).push(it));
+  const keys = Object.keys(groups);
+  keys.forEach(k => {
+    const g = groups[k];
+    for (let i = g.length - 1; i > 0; i--){ const j = Math.floor(rnd() * (i+1)); [g[i], g[j]] = [g[j], g[i]]; }
+  });
+  const order = Object.keys(groups);
+  for (let i = order.length - 1; i > 0; i--){ const j = Math.floor(rnd() * (i+1)); [order[i], order[j]] = [order[j], order[i]]; }
+  const out = [], qi = {};
+  while (out.length < 10){
+    let added = false;
+    for (const d of order){
+      const g = groups[d], i = qi[d] = (qi[d] || 0);
+      if (i < g.length){ out.push(g[i]); qi[d] = i + 1; added = true; }
+      if (out.length === 10) break;
+    }
+    if (!added) break;
+  }
+  return out;
+}
+
+/* ---- 状态 ---- */
+const K_READ = 'hltb.roulette.read.v1', K_THEME = 'hltb.roulette.theme.v1';
+const state = {
+  seed: todayStr(),
+  mode: 'all',
+  q: '',
+  sec: null,
+  read: new Set(JSON.parse(localStorage.getItem(K_READ) || '[]')),
+  ten: [],
+};
+const byKey = Object.fromEntries(DB.items.map(i => [i.k, i]));
+
+function esc(t){
+  return String(t == null ? '' : t)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function refCount(src){
+  return (String(src).match(/https?:\/\//g) || []).length;
+}
+function match(it){
+  if (state.q){
+    const q = state.q.toLowerCase();
+    if (!(it.t + ' ' + it.p).toLowerCase().includes(q)) return false;
+  }
+  if (state.mode === 'a' && !/^A/.test(it.e)) return false;
+  return true;
+}
+function isRead(k){ return state.read.has(k); }
+function markRead(k){
+  if (state.read.has(k)) return false;
+  state.read.add(k);
+  localStorage.setItem(K_READ, JSON.stringify([...state.read]));
+  return true;
+}
+
+/* ---- 每日十条 ---- */
+function chipHtml(it){
+  return '<span class="dom" data-d="' + it.d + '"><i></i>' + esc(DOM[it.d]) + '</span>' +
+    '<span class="grade ' + (/^A/.test(it.e) ? 'A' : /^B/.test(it.e) ? 'B' : 'C') + '">' + esc(it.e[0]) + '</span>' +
+    '<span class="sect">§' + it.s + '.' + it.n + '　' + esc(it.st) + '</span>' +
+    (isRead(it.k) ? '<span class="readmark">已读</span>' : '');
+}
+function dcardHtml(it, i){
+  return '<li><article class="dcard" tabindex="0" role="button" data-jump="' + it.k + '" data-d="' + it.d + '" aria-label="第 ' + (i+1) + ' 条：' + esc(it.t) + '">' +
+    '<div class="dmeta">' + chipHtml(it) + '</div>' +
+    '<h3>' + esc(it.t) + '</h3>' +
+    '<p class="plain">' + esc(it.p) + '</p>' +
+    '<div class="dfoot"><span class="cost" title="' + esc(it.c) + '">' + esc(it.c) + '</span>' +
+    '<span class="jump">看全文 ›</span></div>' +
+    '</article></li>';
+}
+function renderDial(items, angle){
+  const R = 24, W = 7, r = R - W/2, cx = 32, cy = 32, gap = 4;
+  let paths = '';
+  items.forEach((it, i) => {
+    const a0 = (-90 + i*36 + gap/2) * Math.PI/180, a1 = (-90 + (i+1)*36 - gap/2) * Math.PI/180;
+    const large = (a1 - a0) > Math.PI ? 1 : 0;
+    const x0 = cx + r*Math.cos(a0), y0 = cy + r*Math.sin(a0), x1 = cx + r*Math.cos(a1), y1 = cy + r*Math.sin(a1);
+    paths += '<path d="M' + x0.toFixed(2) + ' ' + y0.toFixed(2) + ' A' + r + ' ' + r + ' 0 ' + large + ' 1 ' + x1.toFixed(2) + ' ' + y1.toFixed(2) + '" fill="none" stroke="' + dcolor(it.d) + '" stroke-width="' + W + '" stroke-linecap="round"/>';
+  });
+  const g = document.getElementById('dialArcs');
+  g.innerHTML = paths;
+  g.style.transform = 'rotate(' + angle + 'deg)';
+}
+function renderDaily(spin){
+  state.ten = pickTen(state.seed);
+  const list = state.ten.filter(match);
+  const box = document.getElementById('dList');
+  box.innerHTML = list.length ? list.map(dcardHtml).join('') : '<li class="tip">没有匹配的条目，换个关键词，或点「全部」。</li>';
+
+  document.getElementById('dDate').textContent = state.seed === todayStr() ? todayStr() : state.seed.slice(5);
+  document.getElementById('dLede').textContent = '同一天里刷新多少次都是这十条，第二天自动换新的；十条覆盖八个生活领域。';
+  document.getElementById('rail').innerHTML = state.ten.map(it => '<i data-d="' + it.d + '" title="' + esc(DOM[it.d]) + '"></i>').join('');
+  const used = [...new Set(state.ten.map(i => i.d))];
+  document.getElementById('railLegend').innerHTML = used.map(d =>
+    '<span data-d="' + d + '"><b></b>' + esc(DOM[d]) + '</span>').join('');
+  const note = document.getElementById('dNote');
+  const parts = [];
+  parts.push('优先从「不花钱或少花钱 + 收益大」里抽，共 ' + DB.items.length + ' 条候选池');
+  if (state.mode === 'a') parts.push('只看 A 级：本批 A 级 ' + state.ten.filter(i => /^A/.test(i.e)).length + ' 条');
+  if (state.mode === 'plain') parts.push('只看说人话：已隐去标题和成本，只留原文那一段');
+  if (state.q) parts.push('关键词「' + state.q + '」命中 ' + list.length + ' 条');
+  parts.push('已读状态只存在你自己的浏览器里，不做打卡。');
+  note.textContent = parts.join('；') + '。';
+  renderDial(state.ten, spin === undefined ? 0 : spin);
+}
+
+/* ---- 正文卡片 ---- */
+function icardHtml(it, id){
+  const g = /^A/.test(it.e) ? 'A' : /^B/.test(it.e) ? 'B' : 'C';
+  const n = refCount(it.src);
+  return '<article class="icard" id="' + (id || ('s' + it.k)) + '" data-d="' + it.d + '">' +
+    '<div class="dmeta">' + chipHtml(it) + '</div>' +
+    '<h3 style="margin:6px 0 0;font-size:17px;line-height:1.6">' + esc(it.t) + '</h3>' +
+    '<p class="plain" style="margin-top:8px">' + esc(it.p) + '</p>' +
+    '<dl class="kv">' +
+      '<dt>成本</dt><dd>' + esc(it.c) + '</dd>' +
+      '<dt>收益</dt><dd>' + esc(it.b) + '</dd>' +
+      (it.r ? '<dt>备注</dt><dd>' + esc(it.r) + '</dd>' : '') +
+    '</dl>' +
+    '<details><summary>来源' + (n ? '（' + n + ' 条文献外链）' : '') + '</summary><p class="src">' + esc(it.src) + '</p></details>' +
+    '</article>';
+}
+function renderBody(){
+  const slot = document.getElementById('detailSlot');
+  const box = document.getElementById('bodyList');
+  const sub = document.getElementById('bodySub');
+  if (state.sec != null){
+    const s = DB.secs.find(x => x.s === state.sec);
+    const items = DB.items.filter(i => i.s === state.sec && match(i));
+    document.getElementById('bodyTitle').textContent = '§' + s.s + '　' + s.t;
+    sub.textContent = '全书共 ' + s.n + ' 条，本次演示载入 ' + items.length + ' 条';
+    slot.innerHTML = '';
+    box.innerHTML = items.length ? items.map(i => icardHtml(i)).join('')
+      : '<p class="tip">这一节在本次演示里没有载入条目（设计稿只载入 61 条样本）。</p>';
+  } else {
+    document.getElementById('bodyTitle').textContent = '正文 · 目录里的原条目';
+    sub.textContent = '点每日十条里的任意一条，这里会展开对应原文';
+    box.innerHTML = DEMO.map(k => icardHtml(byKey[k])).filter(Boolean).join('');
+  }
+}
+const DEMO = ['13-3', '5-27', '11-6'];
+
+function openDetail(k){
+  const it = byKey[k];
+  if (!it) return;
+  const slot = document.getElementById('detailSlot');
+  slot.innerHTML = '<p class="tip">从「每日十条」第 ' + (state.ten.findIndex(x => x.k === k) + 1) + ' 条跳过来的原文，可点下面标题回到顶部。</p>' + icardHtml(it);
+  const fresh = markRead(k);
+  renderDaily();
+  const el = slot.querySelector('.icard');
+  el.classList.add('flash');
+  setTimeout(() => el.scrollIntoView({behavior:'smooth', block:'start'}), 10);
+  if (fresh) toast('记下了：§' + it.s + '.' + it.n);
+}
+let toastEl = null, toastTimer = null;
+function toast(msg){
+  if (!toastEl){
+    toastEl = document.createElement('div');
+    toastEl.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:999px;font-size:13px;z-index:99;opacity:0;transition:opacity .25s';
+    document.body.appendChild(toastEl);
+  }
+  toastEl.textContent = msg;
+  requestAnimationFrame(() => toastEl.style.opacity = '1');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.style.opacity = '0', 1800);
+}
+
+/* ---- 目录 ---- */
+function renderToc(){
+  document.getElementById('tocList').innerHTML = DB.secs.map(s => {
+    const loaded = DB.items.filter(i => i.s === s.s).length;
+    return '<li data-d="' + s.d + '"' + (loaded ? '' : ' class="empty"') + '>' +
+      '<button type="button" data-sec="' + s.s + '" title="本次载入 ' + loaded + ' 条 / 本节共 ' + s.n + ' 条"' + (state.sec === s.s ? ' aria-current="true"' : '') + '>' +
+      '<span class="dot"></span><span class="tt">' + esc(s.t) + '</span><span class="nn">' + (loaded ? loaded + '/' : '') + s.n + '</span>' +
+      '</button></li>';
+  }).join('');
+}
+
+/* ---- 主题 ---- */
+const SUN = '<circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6"/>';
+const MOON = '<path d="M20 14.2A8.2 8.2 0 0 1 9.8 4 8.4 8.4 0 1 0 20 14.2z"/>';
+function applyTheme(t){
+  document.documentElement.setAttribute('data-theme', t);
+  localStorage.setItem(K_THEME, t);
+  document.getElementById('themeIcon').innerHTML = t === 'dark' ? SUN : MOON;
+  document.getElementById('themeBtn').title = t === 'dark' ? '切到明亮主题' : '切到暗色主题';
+  renderDial(state.ten);
+}
+
+/* ---- 事件 ---- */
+document.getElementById('reroll').addEventListener('click', () => {
+  state.seed = String(Date.now());
+  renderDaily(Math.round(Math.random() * 360));
+  document.getElementById('daily').scrollIntoView({behavior:'smooth', block:'start'});
+});
+document.getElementById('themeBtn').addEventListener('click', () => {
+  applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+});
+document.querySelectorAll('.chip').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  state.mode = b.dataset.mode;
+  document.body.classList.toggle('mode-plain', state.mode === 'plain');
+  renderDaily(); renderBody();
+}));
+let qt = null;
+document.getElementById('q').addEventListener('input', e => {
+  clearTimeout(qt);
+  qt = setTimeout(() => { state.q = e.target.value.trim(); renderDaily(); renderBody(); }, 140);
+});
+document.getElementById('tocList').addEventListener('click', e => {
+  const b = e.target.closest('button[data-sec]');
+  if (!b || b.parentNode.classList.contains('empty')) return;
+  state.sec = Number(b.dataset.sec);
+  renderToc(); renderBody();
+  document.getElementById('bodyTitle').scrollIntoView({behavior:'smooth', block:'start'});
+});
+document.getElementById('dList').addEventListener('click', e => {
+  const c = e.target.closest('[data-jump]');
+  if (c) openDetail(c.dataset.jump);
+});
+document.getElementById('dList').addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ' '){
+    const c = e.target.closest('[data-jump]');
+    if (c){ e.preventDefault(); openDetail(c.dataset.jump); }
+  }
+});
+
+/* ---- 启动 ---- */
+applyTheme(localStorage.getItem(K_THEME) || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+document.getElementById('count').textContent = DB.total_secs + ' 节 · ' + DB.total_items + ' 条';
+document.getElementById('fPool').textContent = DB.items.length;
+renderToc();
+renderDaily(0);
+renderBody();
+</script>
+</body>
+</html>

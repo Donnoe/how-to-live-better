@@ -17,6 +17,7 @@
 
 import argparse
 import html
+import json
 import os
 import re
 import subprocess
@@ -66,6 +67,44 @@ COST_W = {
     "毅力": {"否": 0, "些": 1, "是": 2},
 }
 RATIO_ORDER = {"极高": 0, "高": 1, "一般": 2}
+
+# 34 节 → 8 大生活领域。颜色在建议标签上承担信息：
+# 读者看颜色就知道这条讲的是钱、关系还是法律，而不是给 UI 按钮上色。
+# 区间按各节真实主题划，不按节号顺序猜——比如第 11 节「程序员红线」是技术人的事，
+# 该跟第 26 节「做网站」归一类，尽管中间隔着十几节别的内容。
+DOMAINS = [
+    (1, 2, "健康身体", "d5"),      # 不要早死 / 不要慢慢死
+    (3, 4, "情绪与精力", "d6"),    # 不要浪费精力 / 时间
+    (5, 7, "钱与保障", "d2"),       # 不要浪费钱 / 反面清单 / 没钱怎么活
+    (8, 9, "法律与安全", "d4"),     # 法律与财产安全 / 法律红线
+    (10, 10, "关系与家庭", "d3"),   # 恋爱和结婚
+    (11, 11, "工作与技能", "d7"),   # 程序员和技术人
+    (12, 12, "钱与保障", "d2"),     # 创业与做生意
+    (13, 13, "意外防护", "d1"),     # 紧急情况
+    (14, 15, "法律与安全", "d4"),   # 账号信息安全 / 租房买房
+    (16, 17, "健康身体", "d5"),     # 慢性病 / 家里有老人
+    (18, 18, "育儿与养老", "d8"),   # 养孩子划不划算
+    (19, 19, "钱与保障", "d2"),     # 在职离职和工伤
+    (20, 20, "育儿与养老", "d8"),   # 刚出生的孩子
+    (21, 21, "意外防护", "d1"),     # 出国旅行与境外安全
+    (22, 22, "情绪与精力", "d6"),   # 怎么放松
+    (23, 23, "工作与技能", "d7"),   # 学什么技能
+    (24, 24, "健康身体", "d5"),     # 看病
+    (25, 25, "关系与家庭", "d3"),   # 人走了以后办什么
+    (26, 26, "工作与技能", "d7"),   # 做一个网站或平台
+    (27, 28, "健康身体", "d5"),     # 怀孕生产 / 别为外形搞坏身体
+    (29, 29, "情绪与精力", "d6"),   # 遭遇重大打击之后
+    (30, 32, "育儿与养老", "d8"),   # 上学的孩子 / 十八岁之后 / 出国留学
+    (33, 34, "健康身体", "d5"),     # 残疾之后 / 常备药
+]
+
+
+def domain_of(n):
+    """节号 → (领域名, 色 class)。落在末尾区间的一律归最后一档。"""
+    for lo, hi, name, cls in DOMAINS:
+        if lo <= n <= hi:
+            return name, cls
+    raise SystemExit("第 %d 节没有归入任何领域，请检查 DOMAINS 区间" % n)
 
 
 def find_file(n):
@@ -171,141 +210,236 @@ def source_rev():
         pass
     return "", ""
 
-
 CSS = r"""
 *,*::before,*::after{box-sizing:border-box}
 :root{
-  --bg:#ffffff;--bg-alt:#f6f6f7;--bg-elv:#ffffff;--bg-mute:#f1f1f2;
-  --divider:#e2e2e3;
-  --t1:rgba(60,60,67,1);--t2:rgba(60,60,67,.78);--t3:rgba(60,60,67,.56);
-  --brand-1:#3451b2;--brand-2:#3a5ccc;--brand-soft:rgba(100,108,255,.12);
-  --green-1:#18794e;--green-soft:rgba(16,185,129,.13);
-  --yellow-1:#915930;--yellow-soft:rgba(234,179,8,.15);
-  --red-1:#b8272c;--red-soft:rgba(244,63,94,.12);
-  --gray-1:#565a5f;--gray-soft:rgba(142,150,170,.15);
-  --mark:rgba(234,179,8,.34);
-  --font:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
-  --mono:ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  /* 纸感底色：不是纯白，是有一点黄的米白，像摊开的书页 */
+  --paper:#F7F3EC;--card:#FFFCF7;--card2:#FBF6EE;--sink:#F1EBE0;
+  --rule:#E6DDCE;--rule2:#D5C9B4;
+  --ink:#2A2521;--ink2:#5F564C;--ink3:#8A8072;
+  /* 唯一强调色：朱红。用在小面积，底色始终是纸 */
+  --a:#B03A24;--a-soft:#F6E4DC;--a-line:#E3C3B6;
+  --b:#2C5B79;--b-soft:#E3EBF1;
+  --c:#6E655A;--c-soft:#EBE5DA;
+  /* 八个生活领域。颜色承担信息：看色就知道这条管的是命、钱还是关系 */
+  --d1:#B23A1E;--d1-bg:#FBE9E2;   /* 意外防护 */
+  --d2:#0E7C6E;--d2-bg:#E1F1EE;   /* 钱与保障 */
+  --d3:#C0456E;--d3-bg:#FBE7EE;   /* 关系与家庭 */
+  --d4:#2F6BB5;--d4-bg:#E5EDF8;   /* 法律与安全 */
+  --d5:#A6701A;--d5-bg:#F8EEDD;   /* 健康身体 */
+  --d6:#4A7A2E;--d6-bg:#EAF2E3;   /* 情绪与精力 */
+  --d7:#6A52B5;--d7-bg:#EDE9F9;   /* 工作与技能 */
+  --d8:#8A5A2B;--d8-bg:#F5EBE1;   /* 育儿与养老 */
+  --mark:#F5D98A;
+  /* 中文系统字体栈：西文在前（接住数字与拉丁字母），中文在后 */
+  --font:ui-sans-serif,system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+  --serif:"Songti SC","STSong","Noto Serif SC","Source Han Serif SC","SimSun",ui-serif,serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
   --bar:56px;--side:296px;
 }
 [data-theme=dark]{
-  --bg:#1b1b1f;--bg-alt:#161618;--bg-elv:#202127;--bg-mute:#2b2b2f;
-  --divider:#2e2e32;
-  --t1:rgba(255,255,245,.88);--t2:rgba(235,235,245,.62);--t3:rgba(235,235,245,.4);
-  --brand-1:#a8b1ff;--brand-2:#c3c9ff;--brand-soft:rgba(100,108,255,.18);
-  --green-1:#3dd68c;--green-soft:rgba(16,185,129,.16);
-  --yellow-1:#f9b44e;--yellow-soft:rgba(234,179,8,.16);
-  --red-1:#f66f81;--red-soft:rgba(244,63,94,.16);
-  --gray-1:#a4a8ae;--gray-soft:rgba(142,150,170,.16);
-  --mark:rgba(234,179,8,.3);
+  --paper:#1A1817;--card:#232120;--card2:#1E1C1B;--sink:#2A2725;
+  --rule:#363230;--rule2:#474240;
+  --ink:#EFE9E0;--ink2:#B4AA9E;--ink3:#8B8278;
+  --a:#F09A80;--a-soft:#3A2620;--a-line:#573328;
+  --b:#8FC0DC;--b-soft:#1E2E38;
+  --c:#B0A69A;--c-soft:#2C2A28;
+  --d1:#E8836A;--d1-bg:#3A2420;
+  --d2:#3FBFA9;--d2-bg:#1B3630;
+  --d3:#EE8CAC;--d3-bg:#3A2430;
+  --d4:#79ADEA;--d4-bg:#1D2C3E;
+  --d5:#DBA85A;--d5-bg:#372C18;
+  --d6:#8FBC6E;--d6-bg:#27331E;
+  --d7:#A692E8;--d7-bg:#2A2540;
+  --d8:#C99A62;--d8-bg:#352818;
+  --mark:#6B5A22;
 }
 html{scroll-behavior:smooth;scroll-padding-top:calc(var(--bar) + 14px)}
-body{margin:0;background:var(--bg);color:var(--t1);font:15px/1.75 var(--font);
-  -webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
-a{color:var(--brand-1);text-decoration:none}
-a:hover{color:var(--brand-2);text-decoration:underline;text-underline-offset:2px}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:16px/1.85 var(--font);
+  -webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;
+  line-break:strict;overflow-wrap:break-word;font-synthesis:none}
+h1,h2,h3{text-wrap:balance}
+p{text-wrap:pretty}
+a{color:var(--a);text-decoration:none}
+a:hover{text-decoration:underline;text-underline-offset:2px}
 mark{background:var(--mark);color:inherit;border-radius:2px;padding:0 1px}
-strong{font-weight:600;color:var(--t1)}
+strong{font-weight:600;color:var(--ink)}
 
 /* min-height 用常量、不用 --bar：--bar 是 JS 实测回写的值，
    若拿它当 min-height，顶栏收起后会因为 min-height 还停在旧高度而缩不下去。 */
 .bar{position:sticky;top:0;z-index:30;display:flex;flex-wrap:wrap;align-items:center;gap:10px;
-  padding:0 18px;min-height:56px;background:var(--bg);border-bottom:1px solid var(--divider)}
-.bar h1{font-size:15px;font-weight:600;margin:0;white-space:nowrap;min-width:0}
-.bar h1 small{font-weight:400;font-size:12px;color:var(--t3);margin-left:8px}
+  padding:0 18px;min-height:56px;background:var(--paper);border-bottom:1px solid var(--rule)}
+.bar h1{font-family:var(--serif);font-size:16px;font-weight:600;margin:0;white-space:nowrap;min-width:0;letter-spacing:.01em}
+.bar h1 small{font-weight:400;font-size:12px;color:var(--ink3);margin-left:8px;font-family:var(--font)}
 .spacer{flex:1}
 .search{position:relative;width:300px;max-width:42vw}
-.search input{width:100%;height:34px;padding:0 30px 0 32px;border-radius:8px;border:1px solid var(--divider);
-  background:var(--bg-alt);color:var(--t1);font:inherit;font-size:13px}
-.search input:focus{outline:0;border-color:var(--brand-1);background:var(--bg-elv)}
-.search svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);width:15px;height:15px;
-  fill:none;stroke:var(--t3);stroke-width:2;pointer-events:none}
-.search kbd{position:absolute;right:8px;top:50%;transform:translateY(-50%);font:500 10px/1 var(--font);
-  color:var(--t3);border:1px solid var(--divider);border-radius:4px;padding:2px 4px;background:var(--bg-elv)}
-.btn{height:30px;padding:0 11px;border-radius:999px;border:1px solid var(--divider);background:var(--bg-elv);
-  color:var(--t2);font:500 12px/1 var(--font);cursor:pointer;transition:all .18s;white-space:nowrap}
-.btn:hover{border-color:var(--brand-2);color:var(--t1)}
-.btn[aria-pressed=true]{background:var(--brand-soft);border-color:var(--brand-1);color:var(--brand-1)}
-.count{font-size:12px;color:var(--t3);white-space:nowrap;font-variant-numeric:tabular-nums}
-.jump{display:none;height:30px;max-width:38vw;padding:0 6px;border-radius:8px;border:1px solid var(--divider);
-  background:var(--bg-elv);color:var(--t2);font:500 12px/1 var(--font)}
+.search input{width:100%;height:34px;padding:0 30px 0 32px;border-radius:999px;border:1px solid var(--rule);
+  background:var(--card);color:var(--ink);font:inherit;font-size:13px}
+.search input:focus{outline:0;border-color:var(--a);background:var(--card)}
+.search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:15px;height:15px;
+  fill:none;stroke:var(--ink3);stroke-width:2;pointer-events:none}
+.search kbd{position:absolute;right:10px;top:50%;transform:translateY(-50%);font:500 10px/1 var(--font);
+  color:var(--ink3);border:1px solid var(--rule);border-radius:4px;padding:2px 4px;background:var(--card2)}
+.btn{height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--rule);background:var(--card);
+  color:var(--ink2);font:500 12px/1 var(--font);cursor:pointer;transition:all .18s;white-space:nowrap}
+.btn:hover{border-color:var(--a);color:var(--a)}
+.btn[aria-pressed=true]{background:var(--a-soft);border-color:var(--a-line);color:var(--a)}
+.btn.ghost{background:transparent}
+.jump{display:none;height:30px;max-width:38vw;padding:0 6px;border-radius:8px;border:1px solid var(--rule);
+  background:var(--card);color:var(--ink2);font:500 12px/1 var(--font)}
+.count{font-size:12px;color:var(--ink3);white-space:nowrap;font-variant-numeric:tabular-nums}
 
 .shell{display:flex;align-items:flex-start}
 .toc{position:sticky;top:var(--bar);flex:none;width:var(--side);height:calc(100vh - var(--bar));
-  overflow-y:auto;padding:18px 14px 80px 18px;background:var(--bg-alt);border-right:1px solid var(--divider)}
-.toc .gt{font-size:13px;font-weight:600;margin:0 0 6px;color:var(--t1);display:flex;justify-content:space-between;align-items:baseline}
-.toc .gt small{font-weight:400;font-size:11px;color:var(--t3)}
-.toc .grp{padding-bottom:14px;margin-bottom:14px;border-bottom:1px solid var(--divider)}
+  overflow-y:auto;padding:18px 14px 80px 18px;background:var(--card2);border-right:1px solid var(--rule)}
+.toc .gt{font-size:13px;font-weight:600;margin:0 0 5px;color:var(--ink);display:flex;
+  justify-content:space-between;align-items:baseline;gap:6px}
+.toc .gt small{font-weight:400;font-size:11px;color:var(--ink3);flex:none;font-variant-numeric:tabular-nums}
+.toc .grp{padding-bottom:13px;margin-bottom:13px;border-bottom:1px solid var(--rule)}
 .toc .grp:last-child{border-bottom:0;margin-bottom:0}
+.toc .domdot{width:7px;height:7px;border-radius:50%;flex:none;display:inline-block;margin-right:5px;
+  vertical-align:middle}
 .toc a{display:flex;gap:6px;align-items:baseline;padding:3px 6px;border-radius:6px;font-size:12.5px;
-  line-height:1.5;color:var(--t2)}
-.toc a:hover{background:var(--bg-elv);color:var(--t1);text-decoration:none}
-.toc a.active{background:var(--brand-soft);color:var(--brand-1)}
-.toc a i{font-style:normal;color:var(--t3);font-variant-numeric:tabular-nums;flex:none;min-width:16px;text-align:right}
-.dot{width:6px;height:6px;border-radius:50%;flex:none;margin-top:6px}
-.d0{background:var(--brand-1)}.d1{background:var(--green-1)}.d2{background:var(--t3)}
+  line-height:1.6;color:var(--ink2)}
+.toc a:hover{background:var(--card);color:var(--ink);text-decoration:none}
+.toc a.active{background:var(--a-soft);color:var(--a)}
+.toc a i{font-style:normal;color:var(--ink3);font-variant-numeric:tabular-nums;flex:none;min-width:16px;text-align:right}
+.toc a span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dot{width:6px;height:6px;border-radius:50%;flex:none;margin-top:7px}
+.d0{background:var(--a)}.d1{background:var(--d2)}.d2{background:var(--ink3)}
+/* 目录里那一节的三档性价比构成：粗条越长说明这节越值得先看 */
+.rbar{display:flex;height:3px;border-radius:2px;overflow:hidden;margin:0 0 6px;gap:1px}
+.rbar i{display:block}
+.rb0{background:var(--a)}.rb1{background:var(--d2)}.rb2{background:var(--rule2)}
 
-main{flex:1;min-width:0;padding:26px 40px 140px;max-width:940px}
+main{flex:1;min-width:0;padding:30px 40px 140px;max-width:960px}
 section{margin-bottom:44px}
-.sec-h{display:flex;align-items:baseline;gap:12px;padding-bottom:10px;border-bottom:2px solid var(--divider);margin-bottom:6px}
-.sec-h h2{font-size:22px;font-weight:600;margin:0;letter-spacing:-.2px}
-.sec-h .meta{font-size:12px;color:var(--t3);font-variant-numeric:tabular-nums}
-.intro{color:var(--t2);font-size:14px;margin:12px 0 22px;padding-left:12px;border-left:2px solid var(--divider)}
+.sec-h{display:flex;align-items:baseline;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--rule2);margin-bottom:6px}
+.sec-h h2{font-family:var(--serif);font-size:23px;font-weight:600;margin:0;letter-spacing:.01em}
+.sec-h .meta{font-size:12px;color:var(--ink3);font-variant-numeric:tabular-nums}
+.intro{color:var(--ink2);font-size:15px;margin:12px 0 22px;padding-left:14px;border-left:2px solid var(--rule2)}
 
-.card{background:var(--bg-elv);border:1px solid var(--divider);border-radius:12px;padding:16px 18px 14px;margin-bottom:12px}
+/* ── 每日十条 ───────────────────────────────────────────
+   母题：这本书一次只给你十条，不要你一夜之间改变人生。
+   所以它不是网格列表，是一沓纸里抽出来的十张——有纸叠、撕口、手写序号。 */
+.daily{margin-bottom:52px;padding-bottom:30px;border-bottom:2px solid var(--rule2)}
+.daily-h{margin-bottom:20px}
+.daily-eyebrow{font-size:12.5px;color:var(--a);letter-spacing:.06em;margin-bottom:8px;
+  font-variant-numeric:tabular-nums}
+.daily-eyebrow .daily-sep{margin:0 7px;color:var(--ink3)}
+.daily h2{font-family:var(--serif);font-size:clamp(28px,4.6vw,40px);font-weight:600;margin:0 0 10px;
+  letter-spacing:.02em;line-height:1.25}
+.daily-lead{font-size:15px;color:var(--ink2);margin:0 0 14px;max-width:34em;line-height:1.85}
+.daily-act{display:flex;gap:8px;flex-wrap:wrap}
+.daily-list{background:var(--card2);border:1px solid var(--rule);border-radius:14px;padding:6px 20px 6px}
+.dnote{color:var(--ink3);font-size:12.5px}
+
+/* 十张：两条之间是虚线撕口 */
+.dcard{padding:18px 2px;border-bottom:1px dashed var(--rule2);position:relative}
+.dcard:last-child{border-bottom:0}
+.dcard-head{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:7px}
+.dno{font-family:var(--serif);font-size:13px;font-weight:600;color:var(--a);
+  background:var(--a-soft);border-radius:5px;padding:2px 7px;flex:none;
+  font-variant-numeric:tabular-nums}
+.dcard.read .dno{background:var(--sink);color:var(--ink3)}
+.dhead{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;padding:3px 9px;
+  border-radius:999px;border:1px solid transparent;flex:none}
+.dhead .dt{display:inline-block;width:6px;height:6px;border-radius:50%;flex:none}
+.dgrade{font:500 11px/1 var(--font);padding:3px 8px;border-radius:999px;flex:none}
+.gA{background:var(--d2-bg);color:var(--d2)}
+.gB{background:var(--d5-bg);color:var(--d5)}
+.gC{background:var(--c-soft);color:var(--c)}
+.dwhere{font-size:12px;color:var(--ink3);font-variant-numeric:tabular-nums}
+.dtitle{font-family:var(--serif);font-size:18.5px;font-weight:600;margin:0 0 8px;line-height:1.5;letter-spacing:.01em}
+.dplain{font-size:16.5px;line-height:1.9;color:var(--ink);margin:0 0 12px;max-width:36em}
+.dmeta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12.5px;color:var(--ink3)}
+.dgo{color:var(--a);font-size:13px;font-weight:500;white-space:nowrap}
+.dread{color:var(--ink3);font-size:12px;margin-left:auto}
+.dcard.read .dplain{color:var(--ink2)}
+.daily-note{margin:12px 2px 0}
+
+/* 正文卡片 */
+.card{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:16px 18px 14px;margin-bottom:12px}
 .chead{display:flex;gap:10px;align-items:flex-start}
-.num{flex:none;min-width:24px;height:24px;padding:0 6px;border-radius:7px;background:var(--bg-mute);color:var(--t3);
+.num{flex:none;min-width:24px;height:24px;padding:0 6px;border-radius:7px;background:var(--sink);color:var(--ink3);
   font:600 12px/24px var(--font);text-align:center;font-variant-numeric:tabular-nums}
-.chead h3{margin:0;font-size:16px;font-weight:600;line-height:1.5;letter-spacing:-.1px}
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 12px 34px}
+.chead h3{margin:0;font-size:17px;font-weight:600;line-height:1.55;letter-spacing:.01em}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 12px 34px;align-items:center}
 .badge{font:500 11px/1 var(--font);padding:4px 9px;border-radius:999px;border:1px solid transparent}
-.gA{background:var(--green-soft);color:var(--green-1);border-color:var(--green-soft)}
-.gB{background:var(--yellow-soft);color:var(--yellow-1);border-color:var(--yellow-soft)}
-.gC{background:var(--gray-soft);color:var(--gray-1);border-color:var(--gray-soft)}
-.r0{background:var(--brand-soft);color:var(--brand-1);border-color:var(--brand-soft)}
-.r1{background:var(--green-soft);color:var(--green-1);border-color:var(--green-soft)}
-.r2{background:var(--gray-soft);color:var(--gray-1);border-color:var(--gray-soft)}
-.tag{font:400 11px/1 var(--font);padding:4px 9px;border-radius:999px;background:var(--bg-mute);color:var(--t3)}
+.r0{background:var(--a-soft);color:var(--a);border-color:var(--a-line)}
+.r1{background:var(--d2-bg);color:var(--d2)}
+.r2{background:var(--c-soft);color:var(--c)}
+.tag{font:400 11px/1 var(--font);padding:4px 9px;border-radius:999px;background:var(--sink);color:var(--ink3)}
+/* 领域标签：这一条属于哪个生活领域 */
+.dom{font:500 11px/1 var(--font);padding:4px 9px;border-radius:999px;display:inline-flex;align-items:center;gap:5px}
+.dom::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;flex:none}
 
-.plain{margin:0 0 12px 34px;padding:10px 14px;background:var(--brand-soft);
-  border-left:3px solid var(--brand-1);border-radius:0 8px 8px 0;font-size:15px;line-height:1.8;color:var(--t1)}
-.fields{margin-left:34px}
-.f{display:grid;grid-template-columns:52px 1fr;gap:10px;padding:7px 0;border-top:1px solid var(--divider);
-  font-size:13.5px;line-height:1.75;color:var(--t2)}
-.f b{font-weight:500;color:var(--t3);font-size:12.5px;padding-top:2px}
-.f.note b{color:var(--yellow-1)}
+/* 正文列宽锁在 36em —— 中文一行 36 个汉字是回行不迷路的硬上限。
+   不锁的话，main 在宽屏上会被拉到 900px+，一行 50 多个字，
+   眼睛回行时找不到下一行开头，读起来格外累。 */
+.plain{margin:0 0 12px 34px;padding:12px 16px;background:var(--a-soft);
+  border-radius:0 10px 10px 0;font-size:17px;line-height:1.9;color:var(--ink);max-width:36em}
+.fields{margin-left:34px;max-width:38em}
+.f{display:grid;grid-template-columns:52px 1fr;gap:10px;padding:7px 0;border-top:1px solid var(--rule);
+  font-size:14px;line-height:1.8;color:var(--ink2)}
+.f b{font-weight:500;color:var(--ink3);font-size:12.5px;padding-top:3px}
+.f.note b{color:var(--a)}
 .f>div{min-width:0;overflow-wrap:anywhere}
-.src{margin:10px 0 0 34px;border-top:1px solid var(--divider);padding-top:8px}
-.src summary{cursor:pointer;font-size:12.5px;color:var(--t3);list-style:none;user-select:none}
+.src{margin:10px 0 0 34px;border-top:1px solid var(--rule);padding-top:8px}
+.src summary{cursor:pointer;font-size:13px;color:var(--ink3);list-style:none;user-select:none}
 .src summary::-webkit-details-marker{display:none}
-.src summary::before{content:"▸ ";color:var(--t3)}
+.src summary::before{content:"▸ ";color:var(--ink3)}
 .src[open] summary::before{content:"▾ "}
-.src summary:hover{color:var(--brand-1)}
-.src .sbody{font-size:12.5px;line-height:1.8;color:var(--t2);padding:8px 0 2px;word-break:break-word;overflow-wrap:anywhere}
+.src summary:hover{color:var(--a)}
+.src .sbody{font-size:13px;line-height:1.8;color:var(--ink2);padding:8px 0 2px;overflow-wrap:anywhere}
 
 body.plain-only .fields,body.plain-only .src{display:none}
 .hidden{display:none!important}
+/* 搜索/筛选命中时，目标条目短暂高亮，帮眼睛从十条里找回位置 */
+@keyframes hit{0%{background:var(--a-soft)}100%{background:transparent}}
+.flash{animation:hit 1.6s ease-out}
 
-.empty{color:var(--t3);font-size:14px;padding:40px 0;text-align:center}
-footer{color:var(--t3);font-size:12px;border-top:1px solid var(--divider);padding-top:14px;line-height:1.9}
-footer a{color:var(--t2)}
+.empty{color:var(--ink3);font-size:15px;padding:40px 0;text-align:center}
+footer{color:var(--ink3);font-size:12.5px;border-top:1px solid var(--rule);padding-top:14px;line-height:2}
+footer a{color:var(--ink2)}
 
 #top{position:fixed;right:16px;bottom:16px;z-index:40;width:42px;height:42px;border-radius:50%;
-  border:1px solid var(--divider);background:var(--bg-elv);color:var(--t2);cursor:pointer;
+  border:1px solid var(--rule);background:var(--card);color:var(--ink2);cursor:pointer;
   font:400 17px/1 var(--font);box-shadow:0 2px 12px rgba(0,0,0,.14);
   opacity:0;pointer-events:none;transition:opacity .2s,color .18s}
 #top.show{opacity:1;pointer-events:auto}
-#top:hover{color:var(--brand-1);border-color:var(--brand-1)}
+#top:hover{color:var(--a);border-color:var(--a)}
+
+/* 八个领域的配色，一处定义，标签/目录点/色带共用 */
+.d1{color:var(--d1);background:var(--d1-bg)}
+.d2{color:var(--d2);background:var(--d2-bg)}
+.d3{color:var(--d3);background:var(--d3-bg)}
+.d4{color:var(--d4);background:var(--d4-bg)}
+.d5{color:var(--d5);background:var(--d5-bg)}
+.d6{color:var(--d6);background:var(--d6-bg)}
+.d7{color:var(--d7);background:var(--d7-bg)}
+.d8{color:var(--d8);background:var(--d8-bg)}
+.dhead.d1,.dom.d1{background:var(--d1-bg);color:var(--d1)}
+.dhead.d2,.dom.d2{background:var(--d2-bg);color:var(--d2)}
+.dhead.d3,.dom.d3{background:var(--d3-bg);color:var(--d3)}
+.dhead.d4,.dom.d4{background:var(--d4-bg);color:var(--d4)}
+.dhead.d5,.dom.d5{background:var(--d5-bg);color:var(--d5)}
+.dhead.d6,.dom.d6{background:var(--d6-bg);color:var(--d6)}
+.dhead.d7,.dom.d7{background:var(--d7-bg);color:var(--d7)}
+.dhead.d8,.dom.d8{background:var(--d8-bg);color:var(--d8)}
+.toc .domdot.d1,.toc .domdot.d2,.toc .domdot.d3,.toc .domdot.d4,
+.toc .domdot.d5,.toc .domdot.d6,.toc .domdot.d7,.toc .domdot.d8{background:currentColor}
 
 @media (max-width:1080px){
   .toc{display:none}
   .jump{display:block}
-  main{padding:22px 22px 130px;max-width:none}
+  main{padding:24px 22px 130px;max-width:none}
 }
 @media (max-width:820px){
   .bar{padding:8px 12px;gap:8px;min-height:0}
   /* 顶栏三行：① 标题+节号+明暗 ② 筛选按钮+计数 ③ 搜索（独占整行，手机上才好打字） */
-  .bar h1{order:1;flex:1 1 120px;font-size:14px;overflow:hidden;text-overflow:ellipsis}
+  .bar h1{order:1;flex:1 1 120px;font-size:15px;overflow:hidden;text-overflow:ellipsis}
   .spacer{display:none}
   .jump{order:2}
   #theme{order:3}
@@ -319,40 +453,55 @@ footer a{color:var(--t2)}
   body.compact #f-plain,body.compact .count{display:none}
   body.compact .search{order:2;flex:1 1 120px;margin-top:0}
   body.compact #theme{order:3}
-  main{padding:16px 13px 110px}
-  .sec-h h2{font-size:19px}
+  main{padding:18px 13px 110px}
+  .daily{margin-bottom:38px;padding-bottom:22px}
+  .daily h2{font-size:27px}
+  .daily-lead{font-size:14.5px}
+  .daily-list{padding:2px 15px;border-radius:12px}
+  .dcard{padding:15px 2px}
+  .dtitle{font-size:17px}
+  .dplain{font-size:16px;line-height:1.85}
+  .sec-h h2{font-size:20px}
   .card{padding:14px 14px 12px;border-radius:10px;margin-bottom:10px}
-  .chead h3{font-size:15px}
-  .plain{font-size:14.5px;padding:9px 12px}
-  .f{font-size:13px;grid-template-columns:44px 1fr;gap:8px}
-  .intro{font-size:13.5px;margin:10px 0 18px}
+  .chead h3{font-size:16px}
+  .plain{font-size:16px;padding:10px 13px}
+  .f{font-size:13.5px;grid-template-columns:44px 1fr;gap:8px}
+  .intro{font-size:14px;margin:10px 0 18px}
 }
 @media (max-width:520px){
   .bar h1 small{display:none}
   .chips,.plain,.fields,.src{margin-left:0}
   .num{min-width:22px;height:22px;font-size:11px;line-height:22px}
+  .daily-lead{font-size:14px}
+  .dwhere{font-size:11.5px}
 }
-/* 320-380px 的窄屏：按钮和节号下拉都收紧，否则顶栏会被挤到多占一到两行 */
 @media (max-width:380px){
-  .btn{padding:0 8px;font-size:11px}
-  .bar h1{flex:1 1 90px;font-size:13px}
+  .btn{padding:0 9px;font-size:11px}
+  .bar h1{flex:1 1 90px;font-size:14px}
   .jump{max-width:32vw}
+  .dtitle{font-size:16px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .flash{animation:none}
 }
 @media print{
-  .bar,.toc,#top{display:none}
+  .bar,.toc,#top,.daily-act{display:none}
   main{max-width:none;padding:0}
+  .daily{border-bottom:1px solid #ccc;break-after:page;margin-bottom:0}
   .card{break-inside:avoid;border-color:#ccc}
   .src .sbody{display:block}
-  body{font-size:11pt}
+  .dcard{break-inside:avoid}
+  body{font-size:11pt;background:#fff;color:#000}
 }
 """
-
 
 def render_entry(e, sec_no):
     t = parse_tags(e["tags_raw"])
     f = e["fields"]
     grade = (f.get("证据等级") or "?").strip()[:1]
     ratio = ratio_of(t)
+    dom_name, dom_cls = domain_of(sec_no)
     chips = []
     gcls = {"A": "gA", "B": "gB", "C": "gC"}.get(grade, "gC")
     chips.append('<span class="badge %s">%s 级</span>' % (gcls, grade))
@@ -382,18 +531,18 @@ def render_entry(e, sec_no):
                     '<div class="sbody">%s</div></details>'
                     % ("（%d 条文献）" % n if n else "", inline(src)))
 
-    return ('<article class="card" id="s%d-%d" data-grade="%s" data-ratio="%s">'
+    return ('<article class="card" id="s%d-%d" data-grade="%s" data-ratio="%s" data-domain="%s">'
             '<div class="chead"><span class="num">%d</span><h3>%s</h3></div>'
-            '<div class="chips">%s</div>'
+            '<div class="chips"><span class="dom %s">%s</span>%s</div>'
             '<p class="plain">%s</p>'
             '<div class="fields">%s</div>%s</article>') % (
-        sec_no, e["no"], grade, ratio or "-", e["no"], inline(e["title"]),
-        "".join(chips), inline(f.get("说人话", "")), "".join(rows), src_html)
+        sec_no, e["no"], grade, ratio or "-", dom_cls, e["no"], inline(e["title"]),
+        dom_cls, dom_name, "".join(chips), inline(f.get("说人话", "")), "".join(rows), src_html)
 
 
 JS = r"""
 const cards=[...document.querySelectorAll('.card')];
-const secs=[...document.querySelectorAll('section')];
+const secs=[...document.querySelectorAll('section:not(.daily)')];
 const bar=document.querySelector('.bar');
 const q=document.getElementById('q');
 const cnt=document.getElementById('cnt');
@@ -404,6 +553,132 @@ const fP=document.getElementById('f-plain');
 const themeBtn=document.getElementById('theme');
 const topBtn=document.getElementById('top');
 let grade=null, plainOnly=false;
+
+/* ── 每日十条 ────────────────────────────────────────────
+   同一天内刷新多少次都是这十条，第二天自动换一批。
+   做法：把本地日期编成种子，喂给一个确定性 PRNG，同种子必得同序列。
+   不存服务器、不看时间戳，纯靠日期——所以跨零点打开就是新的一批，
+   同一天反复刷新、关掉再打开，又还是同一批。
+   mulberry32：32 位状态、周期足够长、几行就能写对。 */
+const POOL=JSON.parse(document.getElementById('daily-pool').textContent);
+const READ_KEY='hltb-read';
+let readSet;
+try{ readSet=new Set(JSON.parse(localStorage.getItem(READ_KEY)||'[]')); }
+catch(e){ readSet=new Set(); }
+
+function xmur3(str){
+  let h=1779033703^str.length;
+  for(let i=0;i<str.length;i++){
+    h=Math.imul(h^str.charCodeAt(i),3432918353);
+    h=h<<13|h>>>19;
+  }
+  return function(){
+    h=Math.imul(h^h>>>16,2246822507);
+    h=Math.imul(h^h>>>13,3266489909);
+    return (h^=h>>>16)>>>0;
+  };
+}
+function mulberry32(a){
+  return function(){
+    a|=0;a=a+0x6D2B79F5|0;
+    let t=Math.imul(a^a>>>15,1|a);
+    t=t+Math.imul(t^t>>>7,61|t)^t;
+    return ((t^t>>>14)>>>0)/4294967296;
+  };
+}
+function today(){
+  const d=new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+/* 按领域分组再洗牌、最后轮转取——这样十条不会挤在同一个领域里，
+   而是横跨八个生活领域，读完十条等于把生活各转了一圈。 */
+function pickDaily(seed){
+  const rnd=mulberry32(xmur3(seed)());
+  const byDom={};
+  POOL.forEach(it=>{ (byDom[it.cls]=byDom[it.cls]||[]).push(it); });
+  const keys=Object.keys(byDom);
+  keys.forEach(k=>{
+    const arr=byDom[k];
+    for(let i=arr.length-1;i>0;i--){
+      const j=Math.floor(rnd()*(i+1));
+      const t=arr[i];arr[i]=arr[j];arr[j]=t;
+    }
+  });
+  /* 轮转取：每轮从下一个领域拿一条，八个领域转一圈再转第二圈。
+     循环上界给足但有限——万一某个领域被抽空也不会转不出来。 */
+  const out=[];let i=0;
+  while(out.length<10&&i<1000){
+    const k=keys[i%keys.length];
+    if(byDom[k].length) out.push(byDom[k].shift());
+    i++;
+  }
+  return out;
+}
+
+const dailyList=document.getElementById('daily-list');
+const dailyDate=document.getElementById('daily-date');
+const dailyCnt=document.getElementById('daily-cnt');
+const dailyNote=document.getElementById('daily-note');
+const btnShuffle=document.getElementById('f-shuffle');
+const btnRead=document.getElementById('f-read');
+let curSeed=today();
+let readOnly=false;
+
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function renderDaily(){
+  const list=pickDaily(curSeed);
+  let unseen=0;
+  const html=list.map((it,i)=>{
+    const isRead=readSet.has(it.id);
+    if(!isRead) unseen++;
+    const cost=it.money==='0'?'不花钱':(it.money==='少'?'少花钱':(it.money?'花点钱':''));
+    return '<article class="dcard'+(isRead?' read':'')+'" data-id="'+it.id+'">'
+      +'<div class="dcard-head">'
+      +'<span class="dno">'+String(i+1).padStart(2,'0')+'</span>'
+      +'<span class="dhead '+it.cls+'">'+esc(it.dom)+'</span>'
+      +'<span class="dgrade g'+it.grade+'">证据 '+it.grade+'</span>'
+      +'<span class="dwhere">'+it.sec+'. '+esc(it.secTitle)+'</span>'
+      +(isRead?'<span class="dread">已读</span>':'')
+      +'</div>'
+      +'<h3 class="dtitle">'+esc(it.title)+'</h3>'
+      +'<p class="dplain">'+esc(it.plain)+'</p>'
+      +'<div class="dmeta"><span>'+(cost?esc(cost):'')+(it.time?' · 时间 '+esc(it.time):'')+'</span>'
+      +'<a class="dgo" href="#'+it.id+'">看依据 ›</a></div>'
+      +'</article>';
+  }).join('');
+  dailyList.innerHTML=html||'<p class="dnote">候选池是空的。</p>';
+  const d=new Date();
+  dailyDate.textContent=(d.getMonth()+1)+' 月 '+d.getDate()+' 日';
+  const label=(curSeed===today())?'今天十条':'换的一批';
+  dailyCnt.textContent=label+' · '+list.length+' 条';
+  dailyNote.textContent='十条里还有 '+unseen+' 条你没读过。读完的会记下来，下次开页面标灰；'
+    +'（只是记一笔，没有打卡和连续天数）';
+  btnRead.setAttribute('aria-pressed',String(readOnly));
+}
+function saveRead(){
+  try{ localStorage.setItem(READ_KEY,JSON.stringify([...readSet].slice(-800))); }catch(e){}
+}
+btnShuffle.onclick=()=>{ curSeed='sh'+Date.now(); renderDaily(); };
+btnRead.onclick=()=>{ readOnly=!readOnly; renderDaily(); };
+
+/* 点每日条目跳到正文里的那一条。顺带把那一条的来源展开——
+   「看依据」的意思是让人真的能看到出处，而不是跳过去还要再点一次。 */
+dailyList.addEventListener('click',e=>{
+  const a=e.target.closest('.dgo');
+  if(!a) return;
+  const card=e.target.closest('.dcard');
+  const id=card.dataset.id;
+  readSet.add(id); saveRead();
+  const t=document.getElementById(id);
+  if(t){
+    const src=t.querySelector('details');
+    if(src) src.open=true;
+    t.classList.remove('flash');void t.offsetWidth;t.classList.add('flash');
+    t.scrollIntoView({block:'start'});
+  }
+  renderDaily();
+});
 
 /* 顶栏高度会随换行变化，交给 JS 实测，锚点跳转才不会被顶栏盖住 */
 function syncBar(){
@@ -538,6 +813,8 @@ const io=new IntersectionObserver(es=>{
 },{rootMargin:'-70px 0px -75% 0px'});
 cards.forEach(c=>io.observe(c));
 if(jump) secs.forEach(s=>io.observe(s));
+
+renderDaily();
 """
 
 
@@ -548,27 +825,63 @@ def main():
     total = 0
     grade_cnt = {"A": 0, "B": 0, "C": 0}
     link_total = 0
+    # 每日十条的候选池：优先「不花钱 / 少花钱 + 收益大」的条目，
+    # 这类建议读者当天就能用上，抽出来才有「今天就能做」的价值。
+    # 只收有「说人话」的——卡片正文就靠它，没有内容的条目抽出来是空壳。
+    daily_pool = []
+    dom_stat = {}
 
     for n in SECTIONS:
         p = find_file(n)
         title, intro, entries = parse(p)
+        dom_name, dom_cls = domain_of(n)
+        dom_stat[dom_name] = dom_stat.get(dom_name, 0) + len(entries)
         cards = []
         links = []
+        # 这一节的性价比构成，目录里画成一条横条
+        rr = [RATIO_ORDER.get(ratio_of(parse_tags(e["tags_raw"])), 2) for e in entries]
+        bar_r0 = rr.count(0)
+        bar_r1 = rr.count(1)
+        bar_r2 = rr.count(2)
         for e in entries:
             g = (e["fields"].get("证据等级") or "?").strip()[:1]
             if g in grade_cnt:
                 grade_cnt[g] += 1
             total += 1
+            tags = parse_tags(e["tags_raw"])
             link_total += link_count(e["fields"].get("来源", "")) + link_count(e["fields"].get("备注", ""))
             cards.append(render_entry(e, n))
-            r = ratio_of(parse_tags(e["tags_raw"]))
+            r = ratio_of(tags)
             short = e["title"] if len(e["title"]) <= 34 else e["title"][:33] + "…"
             links.append('<a href="#s%d-%d" title="%s"><span class="dot d%d"></span>'
                          '<i>%d</i><span>%s</span></a>'
                          % (n, e["no"], html.escape(e["title"], quote=True),
                             RATIO_ORDER.get(r, 2), e["no"], html.escape(short)))
-        sec_toc.append('<div class="grp"><div class="gt">%s<small>%d 条</small></div>%s</div>'
-                       % (inline(title), len(entries), "".join(links)))
+            plain = e["fields"].get("说人话", "").strip()
+            if plain and tags.get("收益") == "大" and tags.get("钱") in ("0", "少"):
+                daily_pool.append({
+                    "id": "s%d-%d" % (n, e["no"]),
+                    "sec": n,
+                    "secTitle": title,
+                    "no": e["no"],
+                    "dom": dom_name,
+                    "cls": dom_cls,
+                    "grade": g if g in ("A", "B", "C") else "C",
+                    "title": e["title"],
+                    "plain": plain,
+                    "money": tags.get("钱", ""),
+                    "time": tags.get("时间", ""),
+                })
+        ratio_bar = ""
+        if entries:
+            tot = len(entries)
+            ratio_bar = ('<span class="rbar" aria-hidden="true">'
+                         '<i class="rb0" style="flex:%d"></i><i class="rb1" style="flex:%d"></i>'
+                         '<i class="rb2" style="flex:%d"></i></span>'
+                         % (bar_r0, bar_r1, bar_r2))
+        sec_toc.append('<div class="grp"><div class="gt"><span class="domdot %s"></span>%s'
+                       '<small>%d 条</small></div>%s%s</div>'
+                       % (dom_cls, inline(title), len(entries), ratio_bar, "".join(links)))
         sec_html.append(
             '<section id="sec%d"><div class="sec-h"><h2>%s</h2>'
             '<span class="meta">%d 条</span></div>%s%s</section>'
@@ -603,28 +916,54 @@ def main():
            '<button class="btn" id="theme">明/暗</button></header>' % (
                SCOPE, "".join(jump_opts), total, total))
 
+    # 每日十条：把候选池以 JSON 数据岛注入，交给前端按日期种子抽取。
+    # 放 data island 而不是写死十条，是为了让「第二天自动换一批」不依赖重新构建——
+    # 换批逻辑全在前端，站点每天 06:00 的例行构建只负责内容更新。
+    pool_json = json.dumps(daily_pool, ensure_ascii=False, separators=(",", ":"))
+    # </script> 出现在数据里会提前闭合脚本标签，这里转义掉
+    pool_json = pool_json.replace("</", "<\\/")
+
+    daily = ('<section class="daily" id="daily">'
+             '<div class="daily-h"><div class="daily-eyebrow">'
+             '<span class="daily-date" id="daily-date"></span>'
+             '<span class="daily-sep">·</span><span id="daily-cnt">10 / 10</span></div>'
+             '<h2>今天给你十张</h2>'
+             '<p class="daily-lead">从 %d 条建议里挑出 10 条不花钱、收益大的。'
+             '同一天里刷新多少次都是这十条，第二天自动换新的；想看更多，点「换一批」。</p>'
+             '<div class="daily-act">'
+             '<button class="btn" id="f-shuffle">换一批</button>'
+             '<button class="btn ghost" id="f-read">只看没读过的</button>'
+             '</div></div>'
+             '<div class="daily-list" id="daily-list"></div>'
+             '<p class="daily-note" id="daily-note"></p></section>'
+             % len(daily_pool))
+
     src_line = '数据来源：<a href="%s" target="_blank" rel="noopener">eternity4719/HowToLiveBetter</a>' % UPSTREAM
     src_line += '（Unlicense，公有领域）'
     if rev:
         src_line += '，数据截至 <span style="font-family:var(--mono)">%s</span>%s' % (
             rev, '（%s）' % rev_date if rev_date else '')
 
+    dom_line = '、'.join('%s %d 条' % (k, v) for k, v in
+                         sorted(dom_stat.items(), key=lambda kv: -kv[1]))
     footer = ('<footer>%s。<br>'
               '「说人话」「收益」等栏目为原文摘录，未作改写；本页共 %d 条，'
               'A 级 %d 条、B 级 %d 条、C 级 %d 条，含 %d 条文献外链。<br>'
+              '按生活领域划分：%s。<br>'
               '单文件自包含，不引用任何外部资源（正文中的文献链接除外），可离线阅读。'
               '由 build.py 生成。</footer>'
-              % (src_line, total, grade_cnt["A"], grade_cnt["B"], grade_cnt["C"], link_total))
+              % (src_line, total, grade_cnt["A"], grade_cnt["B"], grade_cnt["C"], link_total, dom_line))
 
-    shell = ('<div class="shell"><aside class="toc">%s</aside><main>%s'
+    shell = ('<div class="shell"><aside class="toc">%s</aside><main>%s%s'
              '<div class="empty hidden" id="empty">没有匹配的条目</div>%s'
              '</main></div>'
              '<button id="top" title="回到顶部" aria-label="回到顶部">↑</button>'
-             % ("".join(sec_toc), "".join(sec_html), footer))
+             % ("".join(sec_toc), daily, "".join(sec_html), footer))
 
     # 注意：JS 字符串只含脚本体，<script> 开合标签在这里拼。
     # 之前漏了开标签，导致整段 JS 被当纯文本渲染在页面底部、脚本从未执行。
-    out = head + bar + shell + "<script>" + JS + "</script></body></html>"
+    out = (head + bar + shell + '<script id="daily-pool" type="application/json">'
+           + pool_json + '</script><script>' + JS + '</script></body></html>')
 
     if ARGS.out:
         name = Path(ARGS.out)
