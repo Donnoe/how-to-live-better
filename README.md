@@ -71,10 +71,31 @@ node test-daily.js
 跟第 26 节「做一个网站」同类，尽管中间隔着十几节别的内容。
 上游新增或调整章节时，记得同步这个表。
 
+## 安全约定
+
+页面把上游 markdown 渲染进单文件 HTML，所以把渲染边界收在下面几条。
+改 build.py 时这几条要一起看，`node test-security.js` 会逐条复查：
+
+- **URL 走白名单**：`inline()` 只放行 `http/https`，其余（含 `javascript:`、
+  `data:`、带引号或空格的）一律降级为 `#`。URL 会被拼进 `href="..."`，
+  而正文转义用的是 `html.escape(quote=False)`（不动引号），不做这层校验的话
+  一个带引号的链接就能闭合 href、注入 `onmouseover=` 之类的属性。
+- **所有外链带 `rel="noopener noreferrer"`**：前者在旧浏览器上防反向标签劫持，
+  后者不把「读者从哪来」告诉对方站点。页面另有 `<meta name="referrer"
+  content="no-referrer">` 兜底。
+- **零外部资源**：没有 link/@import/远程 url()/外链 script，
+  也没有 fetch/XHR/WebSocket 等出网调用。页面不主动联系任何服务器，
+  唯一的出网是读者自己点击文献链接。
+- **只往 localStorage 写主题和已读条目 id**：不存搜索词、不存阅读正文。
+  已读记录只存在读者自己的浏览器里，不上传，也没有清缓存之外的清除入口
+  （控制台执行 `localStorage.removeItem('hltb-read')` 即可）。
+
 ## 自动更新
 
 `.github/workflows/rebuild.yml` 每天 06:00（北京时间）拉取上游重新生成，
 内容有变化才提交。也可以去 Actions 页面手动触发。
+它只执行本仓库的 build.py，不执行上游的任何代码，上游仅作为 markdown 数据源；
+权限收敛到 `contents: write` 一项。
 
 ## 授权
 

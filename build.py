@@ -168,6 +168,22 @@ def ratio_of(t):
     return "一般"
 
 
+def safe_url(u):
+    """只放行 http/https，其余一律降级为 '#'。
+
+    这不是洁癖：URL 要拼进 href="..."，而下面 inline() 里的 html.escape 用的是
+    quote=False（不转义引号），所以一个带引号的 URL 能提前闭合 href、注入
+    onmouseover= 之类的属性。上游 markdown 是外部输入，构造这种载荷不需要
+    什么技术门槛，所以边界上只认协议、不认引号。
+
+    顺带挡掉 javascript: 和 data:——两者都能在点击时执行任意脚本。
+    """
+    u = u.strip()
+    if re.match(r"(?i)^https?://", u) and not re.search(r"[\s\"'<>`]", u):
+        return u
+    return "#"
+
+
 def inline(s):
     """把一小段 markdown 行内语法转成 HTML。先整体转义，再用占位符放链接。"""
     stash = []
@@ -176,7 +192,12 @@ def inline(s):
         shown = text or url
         if len(shown) > 62:
             shown = shown[:59] + "…"
-        stash.append('<a href="%s" target="_blank" rel="noopener">%s</a>' % (url, shown))
+        # url 必须再转义一次：stash 出来的 HTML 是拼进属性里的，
+        # 不转义的话引号会闭合 href，把它变成新的属性。
+        # noreferrer 一并加上，避免点击外链时把 referrer 带给对方站点。
+        stash.append('<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>'
+                     % (html.escape(safe_url(url), quote=True),
+                        html.escape(shown, quote=False)))
         return "\u0001%d\u0001" % (len(stash) - 1)
 
     s = html.escape(s, quote=False)
@@ -897,6 +918,9 @@ def main():
             '<meta name="color-scheme" content="light dark">'
             '<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">'
             '<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1b1b1f">'
+            # 读者点外链去看文献时，不把「从哪来」告诉对方站点。
+            # 外链已带 noreferrer，这条是双保险，也覆盖非 a 标签的跳转。
+            '<meta name="referrer" content="no-referrer">'
             '<meta name="description" content="《高性价比人生指南》%s，共 %d 条建议，'
             '每条标注成本、收益、证据等级（A/B/C）与原始文献链接。单文件、零依赖、可离线阅读。">'
             '<title>高性价比人生指南 · %s</title><style>%s</style></head><body>'
@@ -938,7 +962,8 @@ def main():
              '<p class="daily-note" id="daily-note"></p></section>'
              % len(daily_pool))
 
-    src_line = '数据来源：<a href="%s" target="_blank" rel="noopener">eternity4719/HowToLiveBetter</a>' % UPSTREAM
+    src_line = ('数据来源：<a href="%s" target="_blank" rel="noopener noreferrer">'
+                'eternity4719/HowToLiveBetter</a>' % UPSTREAM)
     src_line += '（Unlicense，公有领域）'
     if rev:
         src_line += '，数据截至 <span style="font-family:var(--mono)">%s</span>%s' % (

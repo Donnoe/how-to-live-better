@@ -8,8 +8,18 @@ on:
     - cron: '0 22 * * *'
   workflow_dispatch:
 
+# 这个 workflow 唯一的动作是「提交 index.html」，所以只给 contents: write，
+# 不给 packages / issues / actions 等任何其他权限。
+# 它每天克隆一个外部仓库，因此权限面越小越好：万一上游或某个 action 出问题，
+# 攻击者能拿到的也只是一个提交 HTML 的权限，写不了别的。
 permissions:
   contents: write
+
+# 固定到主分支：定时任务往哪推必须写死，避免上游某天改了这个文件
+# 就把提交重定向到别处。
+defaults:
+  run:
+    shell: bash
 
 concurrency:
   group: rebuild
