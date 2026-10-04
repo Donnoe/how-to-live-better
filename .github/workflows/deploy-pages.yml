@@ -1,0 +1,43 @@
+name: deploy-pages
+
+# fork 不会继承上游的 Pages 设置，这个 workflow 负责把 index.html 发到
+# https://donnoe.github.io/how-to-live-better/
+#
+# 触发方式：push 到 main 且 index.html 有变化时自动部署，
+# 另外保留手动触发，方便第一次开启 Pages 时点一次。
+on:
+  push:
+    branches: [main]
+    paths:
+      - index.html
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同时只跑一个部署，并且允许本次部署期间的新 push 取消旧部署，
+# 免得旧版本后到把新版本顶掉。
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/configure-pages@v5
+
+      # 仓库根目录就是 index.html，不需要额外构建步骤。
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
