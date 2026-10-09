@@ -381,11 +381,16 @@ section{margin-bottom:44px}
 .daily-note{margin:12px 2px 0}
 
 /* 正文卡片 */
-.card{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:16px 18px 14px;margin-bottom:12px}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:16px 18px 14px;margin-bottom:12px;transition:border-color .18s}
+.card.read{border-color:var(--rule2)}
+.card.read .chead h3{color:var(--ink2)}
 .chead{display:flex;gap:10px;align-items:flex-start}
 .num{flex:none;min-width:24px;height:24px;padding:0 6px;border-radius:7px;background:var(--sink);color:var(--ink3);
   font:600 12px/24px var(--font);text-align:center;font-variant-numeric:tabular-nums}
-.chead h3{margin:0;font-size:17px;font-weight:600;line-height:1.55;letter-spacing:.01em}
+.chead h3{margin:0;font-size:17px;font-weight:600;line-height:1.55;letter-spacing:.01em;flex:1;min-width:0}
+.read-badge{display:none;font:500 11px/1 var(--font);padding:2px 7px;border-radius:999px;
+  background:var(--d6-bg);color:var(--d6);border:1px solid currentColor;flex:none;margin-top:3px}
+.card.read .read-badge{display:inline-block}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 12px 34px;align-items:center}
 .badge{font:500 11px/1 var(--font);padding:4px 9px;border-radius:999px;border:1px solid transparent}
 .r0{background:var(--a-soft);color:var(--a);border-color:var(--a-line)}
@@ -414,6 +419,20 @@ section{margin-bottom:44px}
 .src[open] summary::before{content:"▾ "}
 .src summary:hover{color:var(--a)}
 .src .sbody{font-size:13px;line-height:1.8;color:var(--ink2);padding:8px 0 2px;overflow-wrap:anywhere}
+.cfoot{display:flex;justify-content:flex-end;align-items:center;margin:12px 0 0 34px;padding-top:8px}
+.btn-read{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;
+  border:1px solid var(--rule);background:var(--card);color:var(--ink3);
+  font:500 12px/1.3 var(--font);cursor:pointer;transition:all .18s;user-select:none}
+.btn-read:hover{border-color:var(--a);color:var(--a)}
+.btn-read .check-icon{flex:none}
+.btn-read[aria-pressed=true],.card.read .btn-read{
+  background:var(--d6-bg);border-color:var(--d6);color:var(--d6);
+}
+.btn-read[aria-pressed=true]:hover,.card.read .btn-read:hover{
+  background:var(--a-soft);border-color:var(--a-line);color:var(--a);
+}
+.btn-read.sm{padding:2px 9px;font-size:11.5px}
+.dmeta-act{display:inline-flex;align-items:center;gap:8px;margin-left:auto}
 
 body.plain-only .fields,body.plain-only .src{display:none}
 .hidden{display:none!important}
@@ -491,7 +510,7 @@ footer a{color:var(--ink2)}
 }
 @media (max-width:520px){
   .bar h1 small{display:none}
-  .chips,.plain,.fields,.src{margin-left:0}
+  .chips,.plain,.fields,.src,.cfoot{margin-left:0}
   .num{min-width:22px;height:22px;font-size:11px;line-height:22px}
   .daily-lead{font-size:14px}
   .dwhere{font-size:11.5px}
@@ -507,7 +526,7 @@ footer a{color:var(--ink2)}
   .flash{animation:none}
 }
 @media print{
-  .bar,.toc,#top,.daily-act{display:none}
+  .bar,.toc,#top,.daily-act,.cfoot{display:none}
   main{max-width:none;padding:0}
   .daily{border-bottom:1px solid #ccc;break-after:page;margin-bottom:0}
   .card{break-inside:avoid;border-color:#ccc}
@@ -552,13 +571,20 @@ def render_entry(e, sec_no):
                     '<div class="sbody">%s</div></details>'
                     % ("（%d 条文献）" % n if n else "", inline(src)))
 
-    return ('<article class="card" id="s%d-%d" data-grade="%s" data-ratio="%s" data-domain="%s">'
-            '<div class="chead"><span class="num">%d</span><h3>%s</h3></div>'
+    card_id = "s%d-%d" % (sec_no, e["no"])
+    return ('<article class="card" id="%s" data-grade="%s" data-ratio="%s" data-domain="%s">'
+            '<div class="chead"><span class="num">%d</span><h3>%s</h3><span class="read-badge">已读</span></div>'
             '<div class="chips"><span class="dom %s">%s</span>%s</div>'
             '<p class="plain">%s</p>'
-            '<div class="fields">%s</div>%s</article>') % (
-        sec_no, e["no"], grade, ratio or "-", dom_cls, e["no"], inline(e["title"]),
-        dom_cls, dom_name, "".join(chips), inline(f.get("说人话", "")), "".join(rows), src_html)
+            '<div class="fields">%s</div>%s'
+            '<div class="cfoot"><button class="btn-read" type="button" data-id="%s" aria-pressed="false">'
+            '<svg class="check-icon" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">'
+            '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 8.5l3.5 3.5 6.5-7"/>'
+            '</svg><span class="read-label">标记读过</span>'
+            '</button></div></article>') % (
+        card_id, grade, ratio or "-", dom_cls, e["no"], inline(e["title"]),
+        dom_cls, dom_name, "".join(chips), inline(f.get("说人话", "")), "".join(rows), src_html,
+        card_id)
 
 
 JS = r"""
@@ -584,8 +610,55 @@ let grade=null, plainOnly=false;
 const POOL=JSON.parse(document.getElementById('daily-pool').textContent);
 const READ_KEY='hltb-read';
 let readSet;
-try{ readSet=new Set(JSON.parse(localStorage.getItem(READ_KEY)||'[]')); }
-catch(e){ readSet=new Set(); }
+try{
+  const stored=JSON.parse(localStorage.getItem('hltb-read')||'[]');
+  readSet=new Set(Array.isArray(stored)?stored:[]);
+}catch(e){
+  readSet=new Set();
+}
+
+function saveRead(){
+  try{ localStorage.setItem('hltb-read',JSON.stringify([...readSet].slice(-5000))); }catch(e){}
+}
+
+function updateCard(id){
+  const c=document.getElementById(id);
+  if(!c) return;
+  const isRead=readSet.has(id);
+  c.classList.toggle('read',isRead);
+  const btn=c.querySelector('.btn-read');
+  if(btn){
+    btn.setAttribute('aria-pressed',String(isRead));
+    const txt=btn.querySelector('.read-label');
+    if(txt) txt.textContent=isRead?'已读':'标记读过';
+  }
+}
+
+function initAllReadCards(){
+  cards.forEach(c=>{
+    if(readSet.has(c.id)){
+      c.classList.add('read');
+      const btn=c.querySelector('.btn-read');
+      if(btn){
+        btn.setAttribute('aria-pressed','true');
+        const txt=btn.querySelector('.read-label');
+        if(txt) txt.textContent='已读';
+      }
+    }
+  });
+}
+
+function toggleRead(id){
+  if(!id) return;
+  if(readSet.has(id)){
+    readSet.delete(id);
+  }else{
+    readSet.add(id);
+  }
+  saveRead();
+  updateCard(id);
+  renderDaily();
+}
 
 function xmur3(str){
   let h=1779033703^str.length;
@@ -648,11 +721,17 @@ let readOnly=false;
 function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
 function renderDaily(){
-  const list=pickDaily(curSeed);
+  let list=pickDaily(curSeed);
+  const totalInBatch=list.length;
   let unseen=0;
+  list.forEach(it=>{ if(!readSet.has(it.id)) unseen++; });
+
+  if(readOnly){
+    list=list.filter(it=>!readSet.has(it.id));
+  }
+
   const html=list.map((it,i)=>{
     const isRead=readSet.has(it.id);
-    if(!isRead) unseen++;
     const cost=it.money==='0'?'不花钱':(it.money==='少'?'少花钱':(it.money?'花点钱':''));
     return '<article class="dcard'+(isRead?' read':'')+'" data-id="'+it.id+'">'
       +'<div class="dcard-head">'
@@ -665,32 +744,47 @@ function renderDaily(){
       +'<h3 class="dtitle">'+esc(it.title)+'</h3>'
       +'<p class="dplain">'+esc(it.plain)+'</p>'
       +'<div class="dmeta"><span>'+(cost?esc(cost):'')+(it.time?' · 时间 '+esc(it.time):'')+'</span>'
-      +'<a class="dgo" href="#'+it.id+'">看依据 ›</a></div>'
+      +'<div class="dmeta-act">'
+      +'<button class="btn-read sm" type="button" data-id="'+it.id+'" aria-pressed="'+String(isRead)+'">'
+      +'<svg class="check-icon" viewBox="0 0 16 16" width="12" height="12"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 8.5l3.5 3.5 6.5-7"/></svg>'
+      +'<span class="read-label">'+(isRead?'已读':'标记读过')+'</span>'
+      +'</button>'
+      +'<a class="dgo" href="#'+it.id+'">看依据 ›</a>'
+      +'</div></div>'
       +'</article>';
   }).join('');
-  dailyList.innerHTML=html||'<p class="dnote">候选池是空的。</p>';
+  dailyList.innerHTML=html||(readOnly?'<p class="dnote">这批里的 10 条你都已经读过了！可以点「换一批」看看更多建议，或再次点击上方按钮取消只看未读。</p>':'<p class="dnote">候选池是空的。</p>');
   const d=new Date();
   dailyDate.textContent=(d.getMonth()+1)+' 月 '+d.getDate()+' 日';
   const label=(curSeed===today())?'今天十条':'换的一批';
-  dailyCnt.textContent=label+' · '+list.length+' 条';
+  dailyCnt.textContent=label+' · '+(readOnly?list.length+' / '+totalInBatch:list.length)+' 条';
   dailyNote.textContent='十条里还有 '+unseen+' 条你没读过。读完的会记下来，下次开页面标灰；'
     +'（只是记一笔，没有打卡和连续天数）';
   btnRead.setAttribute('aria-pressed',String(readOnly));
 }
-function saveRead(){
-  try{ localStorage.setItem(READ_KEY,JSON.stringify([...readSet].slice(-800))); }catch(e){}
-}
+
 btnShuffle.onclick=()=>{ curSeed='sh'+Date.now(); renderDaily(); };
 btnRead.onclick=()=>{ readOnly=!readOnly; renderDaily(); };
 
-/* 点每日条目跳到正文里的那一条。顺带把那一条的来源展开——
-   「看依据」的意思是让人真的能看到出处，而不是跳过去还要再点一次。 */
+/* 事件委托：点击正文或每日十条里的 .btn-read */
+document.addEventListener('click',e=>{
+  const btn=e.target.closest('.btn-read');
+  if(!btn) return;
+  const id=btn.dataset.id;
+  if(id) toggleRead(id);
+});
+
+/* 点每日条目跳到正文里的那一条。顺带把那一条的来源展开并标记已读 */
 dailyList.addEventListener('click',e=>{
   const a=e.target.closest('.dgo');
   if(!a) return;
   const card=e.target.closest('.dcard');
   const id=card.dataset.id;
-  readSet.add(id); saveRead();
+  if(!readSet.has(id)){
+    readSet.add(id); saveRead();
+    updateCard(id);
+    renderDaily();
+  }
   const t=document.getElementById(id);
   if(t){
     const src=t.querySelector('details');
@@ -698,7 +792,6 @@ dailyList.addEventListener('click',e=>{
     t.classList.remove('flash');void t.offsetWidth;t.classList.add('flash');
     t.scrollIntoView({block:'start'});
   }
-  renderDaily();
 });
 
 /* 顶栏高度会随换行变化，交给 JS 实测，锚点跳转才不会被顶栏盖住 */
@@ -835,6 +928,7 @@ const io=new IntersectionObserver(es=>{
 cards.forEach(c=>io.observe(c));
 if(jump) secs.forEach(s=>io.observe(s));
 
+initAllReadCards();
 renderDaily();
 """
 
